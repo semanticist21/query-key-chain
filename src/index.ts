@@ -251,9 +251,6 @@ const handlerLevelAction = {
 export const createQueryFactory = <TBase extends TKey, TParams = unknown>(
   baseQuery: TBase
 ) =>
-  new Proxy(
-    [baseQuery] as unknown as QueryArrayBase<TBase, TParams>,
-    handlerLevelFirst
-  ) as QueryArrayBase<TBase, TParams>;
+  new Proxy([baseQuery], handlerLevelFirst) as QueryArrayBase<TBase, TParams>;
 
 export const queryChain = createQueryFactory;
