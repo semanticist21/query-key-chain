@@ -1,5 +1,5 @@
 {
-  "name": "query-key-chain",
+  "name": "@kkoms/query-key-chain",
   "type": "module",
   "version": "0.1.0",
   "description": "A simple and functional query key management solution for React Query, using a cascading array structure.",
