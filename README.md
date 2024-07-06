@@ -44,10 +44,13 @@ This package supports a variety of functions to build complex query keys:
 `.actions()` and `.action(key)`: Define collections of actions and specific actions.  
 `.params(params)`: Append parameters to the query key for more specificity.
 
-`baseKey` is a string which is called when you create base query.  
+`baseKey` is a string which is base of the query key hierarchy. It serves as the foundation upon which further query keys are appended.
+
 `key` is a primitive type like string, number, boolean etc.
 
-All function results are just each unique **`single arrays`**, so you don't have to worry much about side effects.
+`params` can be anything containing additional parameters that can be used to refine or modify the query.
+
+All function results are simply unique extensions of a single array, making them functionally equivalent to using a pure array.
 
 ## Example
 
