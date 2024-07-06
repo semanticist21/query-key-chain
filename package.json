@@ -2,7 +2,7 @@
   "name": "@kkoms/query-key-chain",
   "type": "module",
   "private": false,
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "A simple and functional query key management solution for React Query, using a cascading array structure.",
   "scripts": {
     "build": "vite build",
@@ -24,12 +24,16 @@
     "url": "https://github.com/semanticist21/simple-querykey-factory.git"
   },
   "keywords": [
-    "react-query",
     "react",
-    "querykey",
-    "factory",
-    "query key",
-    "query key management"
+    "react-query",
+    "tanstack",
+    "tanstack-query",
+    "react-query",
+    "query-keys",
+    "query key management",
+    "cascade",
+    "functional",
+    "cache"
   ],
   "author": "semanticist21",
   "license": "ISC",
