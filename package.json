@@ -14,6 +14,10 @@
     "import": "./dist/index.js",
     "require": "./dist/index.cjs"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/semanticist21/simple-querykey-factory.git"
+  },
   "keywords": [
     "react-query",
     "react",

@@ -267,6 +267,23 @@ test("query key type test - type:list>detail>action>params", () => {
   expect(has).toBe(true);
 });
 
+// whether key retained test
+test("query key type test - type:list>detail>action>params", () => {
+  const base = createQueryFactory("test");
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  base
+    .list("list-test")
+    .detail("detail-test")
+    .action("action-test")
+    .params({ test: 3 });
+
+  const match = ["test", "all", "list", "list-test", "detail", "detail-test"];
+  const second = queryChain("test").list("list-test").detail("detail-test");
+
+  expect(second).toEqual(match);
+});
+
 // performance
 test("query key test - performance test", () => {
   const start = performance.now();
