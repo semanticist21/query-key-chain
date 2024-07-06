@@ -2,18 +2,23 @@
   "name": "@kkoms/query-key-chain",
   "type": "module",
   "private": false,
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A simple and functional query key management solution for React Query, using a cascading array structure.",
-  "main": "index.js",
   "scripts": {
     "build": "vite build",
     "test": "jest --verbose false",
     "publish-prod": "pnpm run build && pnpm run test && pnpm publish --access=public"
   },
   "exports": {
-    "import": "./dist/index.js",
-    "require": "./dist/index.cjs"
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
   },
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/semanticist21/simple-querykey-factory.git"
