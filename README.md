@@ -12,11 +12,11 @@ A simple and functional query key management solution for React Query, using a c
   - [API](#api)
     - [_.all()_](#all)
     - [_.lists()_](#lists)
-    - [_list(key: TKey)_](#listkey-tkey)
+    - [_.list(key: TKey)_](#listkey-tkey)
     - [_.details()_](#details)
     - [_.detail(key: TKey)_](#detailkey-tkey)
     - [_.actions()_](#actions)
-    - [_action(key: TKey)_](#actionkey-tkey)
+    - [_.action(key: TKey)_](#actionkey-tkey)
     - [_.params(params: TParams)_](#paramsparams-tparams)
   - [License](#license)
 
@@ -149,7 +149,7 @@ const base = createQueryFactory("test");
 const queryKey = base.lists(); // ['test', 'all', 'list']
 ```
 
-### _list(key: TKey)_
+### _.list(key: TKey)_
 
 The list method appends all, list, and a specific key to the query key. This is useful for querying a specific list identified by the key.
 
@@ -196,7 +196,7 @@ const base = createQueryFactory("test");
 const queryKey = base.actions(); // ['test', 'all', 'action']
 ```
 
-### _action(key: TKey)_
+### _.action(key: TKey)_
 
 The action method appends all, action, and a specific key to the query key. This is useful for querying a specific action identified by the key. When actions() or any preceding part of the chain (such as list or detail) is invalidated, all cascading children, including those created with action, are also invalidated.
 
