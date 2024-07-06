@@ -236,8 +236,6 @@ The params method appends parameters to the query key. This is useful for adding
 When the parent query key or any preceding part of the chain (such as list, detail, or action) is invalidated, this key will be also invalidated.
 As this is the final element of the array, no cascading furthermore.
 
-The params method is used at the end of a chain.
-
 ```typescript
 const base = createQueryFactory("test");
 const queryKey = base.action("action-test").params({ test: 3 });
