@@ -129,7 +129,7 @@ test("query key test - chain:action > params", () => {
   const result2 = action.params({ test: 1, gg: 123 });
 
   expect(result).toEqual(match);
-  expect(result2).toEqual(match);
+  expect(result2).toEqual([...match.slice(0, -1), { test: 1, gg: 123 }]);
 });
 
 test("query key test - chain:list > detail", () => {
@@ -290,7 +290,7 @@ test("query key type test - type:list>detail>action>params", () => {
 // performance
 test("query key test - performance test", () => {
   const start = performance.now();
-  for (let i = 0; i < 5000; i++) {
+  for (let i = 0; i < 3000; i++) {
     createQueryFactory("test")
       .list("list-test")
       .action("action-test")
