@@ -32,11 +32,11 @@ pnpm add @kkoms/query-key-chain
 
 ## Usage
 
-`query-key-chain` offers an efficient way to manage query keys for TanStack React Query in a hierarchical and functional manner.
+`query-key-chain` provides an efficient method for managing query keys in TanStack React Query using a hierarchical and functional approach.
 
-Each chain results in an array, with values appending their segments to it.
+Each chain operation results in an array, with methods appending their segments to this array.
 
-This approach uses the proxy API to attach methods representing different query key levels, ensuring a clean and intuitive API.
+By leveraging the proxy API, query-key-chain attaches methods that represent different levels of the query key hierarchy, ensuring a clean, intuitive, and scalable API for complex query key management.
 
 This package supports a variety of functions to build complex query keys:
 
