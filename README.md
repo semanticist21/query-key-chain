@@ -106,7 +106,7 @@ queryClient.invalidateQueries(boardKeys.lists());
 queryClient.invalidateQueries(boardKeys.base.actions());
 ```
 
-Or you can use it like this.  
+Or you can use `queryChain` for simplicity.  
 `queryChain` is same with `createQueryFactory`. All results are just an array of values, so with same inputs they are all related.
 
 ```typescript
@@ -122,8 +122,6 @@ queryChain("dashboard").params({ action: true });
 ```
 
 ## API
-
-All function results are just arrays, so you don't have to worry much about side effects.
 
 If you are already familiar with React Query's query key invalidation, you may not need to read this section.
 
