@@ -3,7 +3,7 @@
   "type": "module",
   "private": "false",
   "version": "0.1.0",
-  "description": "A simple querykey factory for react-query",
+  "description": "A simple query key management solution for react-query package",
   "main": "index.js",
   "scripts": {
     "build": "vite build",
