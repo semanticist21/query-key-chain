@@ -107,9 +107,7 @@ queryClient.invalidateQueries(boardKeys.base.actions());
 ```
 
 Or you can use it like this.  
-`queryChain` is same with `createQueryFactory`.  
-All results are just an array of values,  
-so with same inputs they are all related.
+`queryChain` is same with `createQueryFactory`. All results are just an array of values, so with same inputs they are all related.
 
 ```typescript
 import { queryChain } from "./src";
@@ -125,7 +123,8 @@ queryChain("dashboard").params({ action: true });
 
 ## API
 
-All function results are just arrays, so you don't have to worry much about side effects.  
+All function results are just arrays, so you don't have to worry much about side effects.
+
 If you are already familiar with React Query's query key invalidation, you may not need to read this section.
 
 ### _.all()_
@@ -144,7 +143,8 @@ const queryKey = base.all(); // ['test', 'all']
 
 ### _.lists()_
 
-The lists method appends all and list to the query key.  
+The lists method appends all and list to the query key.
+
 It signifies a collection of lists. When \_all() is invalidated, all cascading children, including those created with lists, are invalidated as well.
 
 ```typescript
@@ -168,7 +168,8 @@ const queryKey = base.list("list-test"); // ['test', 'all', 'list', 'list-test']
 ### _.details()_
 
 The details method appends all and detail to the query key.  
-It is used to represent a collection of detailed items.  
+It is used to represent a collection of detailed items.
+
 When \_all() is invalidated, all cascading children, including those created with details, are invalidated as well.
 
 Examples of usage:
@@ -176,7 +177,8 @@ Examples of usage:
 `base.details()`: Creates a query key `['test', 'all', 'detail']`.  
 Invalidating all() or details() affects this key directly.
 
-`base.list(id).details()`: Creates a specific query key under a list, e.g., ['test', 'all', 'list', 'list-test', 'detail'].  
+`base.list(id).details()`: Creates a specific query key under a list, e.g., ['test', 'all', 'list', 'list-test', 'detail'].
+
 Invalidating list("list-test") or any preceding chain part cascades down, invalidating details as well.
 
 ```typescript
@@ -192,7 +194,8 @@ This is useful for querying detailed information identified by the key.
 When details() or any preceding part of the chain is invalidated, all cascading children, including detail, are also invalidated.
 
 `base.detail("detail-test")`: Creates a query key ['test', 'all', 'detail', 'detail-test'].  
-`base.list("list-test").detail("detail-test")`: Creates a more specific query key under a list.  
+`base.list("list-test").detail("detail-test")`: Creates a more specific query key under a list.
+
 Invalidating any part of the chain invalidates all cascading children.
 
 ```typescript
@@ -215,8 +218,9 @@ const queryKey = base.actions(); // ['test', 'all', 'action']
 ### _.action(key: TKey)_
 
 The action method appends all, action, and a specific key to the query key.  
-This is useful for querying a specific action identified by the key. When actions() or any preceding part of the chain (such as list or detail) is invalidated,  
-all cascading children, including those created with action, are also invalidated.
+This is useful for querying a specific action identified by the key.
+
+When actions() or any preceding part of the chain (such as list or detail) is invalidated, all cascading children, including those created with action, are also invalidated.
 
 ```typescript
 const base = createQueryFactory("test");
@@ -225,7 +229,8 @@ const queryKey = base.action("action-test"); // ['test', 'all', 'action', 'actio
 
 ### _.params(params: TParams)_
 
-The params method appends parameters to the query key. This is useful for adding query parameters to the key.  
+The params method appends parameters to the query key. This is useful for adding query parameters to the key.
+
 When the parent query key or any preceding part of the chain (such as list, detail, or action) is invalidated, all cascading children, including those created with params, are also invalidated.
 
 The params method is used at the end of a chain.
