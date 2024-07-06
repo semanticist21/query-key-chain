@@ -36,20 +36,22 @@ pnpm add @kkoms/query-key-chain
 
 ## Usage
 
-`query-key-chain` provides a straightforward way to manage query keys in a hierarchical and functional manner. The result of each chain is an array, with each method appending its respective segment to the array. The chain utilizes proxy objects to seamlessly attach methods that represent different levels of query keys, ensuring a clean and intuitive API.
+`query-key-chain` provides a straightforward way to manage query keys in a hierarchical and functional manner.  
+The result of each chain is an array, with each method appending its respective segment to the array.  
+The chain utilizes proxy objects to seamlessly attach methods that represent different levels of query keys, ensuring a clean and intuitive API.
 
 This package supports a variety of functions to build complex query keys:
 
-`.all()`: Represents the global or overarching query.
-`.lists()` and `.list(key)`: Manage collections and specific lists.
-`.details()` and `.detail(key)`: Handle detailed items and specific details.
-`.actions()` and `.action(key)`: Define collections of actions and specific actions.
+`.all()`: Represents the global or overarching query.  
+`.lists()` and `.list(key)`: Manage collections and specific lists.  
+`.details()` and `.detail(key)`: Handle detailed items and specific details.  
+`.actions()` and `.action(key)`: Define collections of actions and specific actions.  
 `.params(params)`: Append parameters to the query key for more specificity.
 
-`baseKey` is a string which is called when you create base query.
+`baseKey` is a string which is called when you create base query.  
 `key` is a primitive type like string, number, boolean etc.
 
-All function results are just **`single arrays`**, so you don't have to worry much about side effects.
+All function results are just each unique **`single arrays`**, so you don't have to worry much about side effects.
 
 ## Example
 
@@ -104,9 +106,9 @@ queryClient.invalidateQueries(boardKeys.lists());
 queryClient.invalidateQueries(boardKeys.base.actions());
 ```
 
-Or you can use it like this.
-`queryChain` is same with `createQueryFactory`.
-All results are just an array of values,
+Or you can use it like this.  
+`queryChain` is same with `createQueryFactory`.  
+All results are just an array of values,  
 so with same inputs they are all related.
 
 ```typescript
@@ -123,14 +125,15 @@ queryChain("dashboard").params({ action: true });
 
 ## API
 
-All function results are just arrays, so you don't have to worry much about side effects. If you are already familiar with React Query's query key invalidation, you may not need to read this section.
+All function results are just arrays, so you don't have to worry much about side effects.  
+If you are already familiar with React Query's query key invalidation, you may not need to read this section.
 
 ### _.all()_
 
-The all method appends all to the query key.
+The all method appends all to the query key.  
 It is typically used to denote a global or invalidating all related query keys.
 
-You can invalidate queries using just `base` too,
+You can invalidate queries using just `base` too,  
 but for semantic purpose it is recommended to use `_.all()_`.
 
 ```typescript
@@ -141,7 +144,8 @@ const queryKey = base.all(); // ['test', 'all']
 
 ### _.lists()_
 
-The lists method appends all and list to the query key. It signifies a collection of lists. When \_all() is invalidated, all cascading children, including those created with lists, are invalidated as well.
+The lists method appends all and list to the query key.  
+It signifies a collection of lists. When \_all() is invalidated, all cascading children, including those created with lists, are invalidated as well.
 
 ```typescript
 // index.ts
@@ -151,7 +155,8 @@ const queryKey = base.lists(); // ['test', 'all', 'list']
 
 ### _.list(key: TKey)_
 
-The list method appends all, list, and a specific key to the query key. This is useful for querying a specific list identified by the key.
+The list method appends all, list, and a specific key to the query key.  
+This is useful for querying a specific list identified by the key.
 
 When `_lists()_` is invalidated, It is invalidated together.
 
@@ -162,13 +167,17 @@ const queryKey = base.list("list-test"); // ['test', 'all', 'list', 'list-test']
 
 ### _.details()_
 
-The details method appends all and detail to the query key. It is used to represent a collection of detailed items. When \_all() is invalidated, all cascading children, including those created with details, are invalidated as well.
+The details method appends all and detail to the query key.  
+It is used to represent a collection of detailed items.  
+When \_all() is invalidated, all cascading children, including those created with details, are invalidated as well.
 
 Examples of usage:
 
-`base.details()`: Creates a query key `['test', 'all', 'detail']`. Invalidating all() or details() affects this key directly.
+`base.details()`: Creates a query key `['test', 'all', 'detail']`.  
+Invalidating all() or details() affects this key directly.
 
-`base.list(id).details()`: Creates a specific query key under a list, e.g., ['test', 'all', 'list', 'list-test', 'detail']. Invalidating list("list-test") or any preceding chain part cascades down, invalidating details as well.
+`base.list(id).details()`: Creates a specific query key under a list, e.g., ['test', 'all', 'list', 'list-test', 'detail'].  
+Invalidating list("list-test") or any preceding chain part cascades down, invalidating details as well.
 
 ```typescript
 const base = createQueryFactory("test");
@@ -177,10 +186,14 @@ const queryKey = base.details(); // ['test', 'all', 'detail']
 
 ### _.detail(key: TKey)_
 
-The detail method appends all, detail, and a specific key to the query key. This is useful for querying detailed information identified by the key. When details() or any preceding part of the chain is invalidated, all cascading children, including detail, are also invalidated.
+The detail method appends all, detail, and a specific key to the query key.  
+This is useful for querying detailed information identified by the key.
 
-`base.detail("detail-test")`: Creates a query key ['test', 'all', 'detail', 'detail-test'].
-`base.list("list-test").detail("detail-test")`: Creates a more specific query key under a list. Invalidating any part of the chain invalidates all cascading children.
+When details() or any preceding part of the chain is invalidated, all cascading children, including detail, are also invalidated.
+
+`base.detail("detail-test")`: Creates a query key ['test', 'all', 'detail', 'detail-test'].  
+`base.list("list-test").detail("detail-test")`: Creates a more specific query key under a list.  
+Invalidating any part of the chain invalidates all cascading children.
 
 ```typescript
 const base = createQueryFactory("test");
@@ -189,7 +202,10 @@ const queryKey = base.detail("detail-test"); // ['test', 'all', 'detail', 'detai
 
 ### _.actions()_
 
-The actions method appends all and action to the query key. It is used to represent a collection of actions. When all() or any preceding part of the chain (such as list or detail) is invalidated, all cascading children, including those created with actions, are also invalidated.
+The actions method appends all and action to the query key.  
+It is used to represent a collection of actions.
+
+When all() or any preceding part of the chain (such as list or detail) is invalidated, all cascading children, including those created with actions, are also invalidated.
 
 ```typescript
 const base = createQueryFactory("test");
@@ -198,7 +214,9 @@ const queryKey = base.actions(); // ['test', 'all', 'action']
 
 ### _.action(key: TKey)_
 
-The action method appends all, action, and a specific key to the query key. This is useful for querying a specific action identified by the key. When actions() or any preceding part of the chain (such as list or detail) is invalidated, all cascading children, including those created with action, are also invalidated.
+The action method appends all, action, and a specific key to the query key.  
+This is useful for querying a specific action identified by the key. When actions() or any preceding part of the chain (such as list or detail) is invalidated,  
+all cascading children, including those created with action, are also invalidated.
 
 ```typescript
 const base = createQueryFactory("test");
@@ -207,7 +225,10 @@ const queryKey = base.action("action-test"); // ['test', 'all', 'action', 'actio
 
 ### _.params(params: TParams)_
 
-The params method appends parameters to the query key. This is useful for adding query parameters to the key. When the parent query key or any preceding part of the chain (such as list, detail, or action) is invalidated, all cascading children, including those created with params, are also invalidated. The params method is used at the end of a chain.
+The params method appends parameters to the query key. This is useful for adding query parameters to the key.  
+When the parent query key or any preceding part of the chain (such as list, detail, or action) is invalidated, all cascading children, including those created with params, are also invalidated.
+
+The params method is used at the end of a chain.
 
 ```typescript
 const base = createQueryFactory("test");
