@@ -1,5 +1,5 @@
 import { test, expect } from "@jest/globals";
-import { createQueryFactory } from ".";
+import { createQueryFactory, queryChain } from ".";
 
 // direct
 test("query key test - all", () => {
@@ -220,10 +220,63 @@ test("query key test - chain:list > action > params", () => {
   expect(result).toEqual(match);
 });
 
+test("query key type test - chain:list > params", () => {
+  const match = [-3, "all", "list", -2, { test: 3 }];
+  const result = queryChain(-3).list(-2).params({ test: 3 });
+
+  expect(result).toEqual(match);
+});
+
+// type
+test("query key type test - type:lists", () => {
+  const match = [true, "all", "list"];
+  const result = queryChain(true).lists();
+
+  expect(result).toEqual(match);
+});
+
+test("query key type test - type:list", () => {
+  const match = [1, "all", "list", true, "action", 0];
+  const result = queryChain(1).list(true).action(0);
+
+  expect(result).toEqual(match);
+});
+
+test("query key type test - type:lists", () => {
+  const match = [1, "all", "list"];
+  const result = queryChain(1).lists();
+
+  expect(result).toEqual(match);
+});
+
+test("query key type test - type:list>detail>action>params", () => {
+  const match = [-3, "all", "list", -2, "detail", -1, "action", 3, { test: 3 }];
+  const result = queryChain(-3)
+    .list(-2)
+    .detail(-1)
+    .action(3)
+    .params({ test: 3 });
+
+  expect(result).toEqual(match);
+});
+
+// has test
+test("query key type test - type:list>detail>action>params", () => {
+  const has = "list" in queryChain(1);
+
+  expect(has).toBe(true);
+});
+
+// performance
 test("query key test - performance test", () => {
   const start = performance.now();
   for (let i = 0; i < 5000; i++) {
     createQueryFactory("test")
+      .list("list-test")
+      .action("action-test")
+      .params({ test: 2, test2: 3 });
+
+    queryChain("test")
       .list("list-test")
       .action("action-test")
       .params({ test: 2, test2: 3 });

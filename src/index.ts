@@ -1,46 +1,47 @@
-type BaseItem<T extends string> = T | string;
+type TKey = string | number | symbol | boolean | bigint;
+type BaseItem<T extends TKey> = T | string;
 
-interface QueryArrayBase<TBase extends string, TParams = unknown>
+interface QueryArrayBase<TBase extends TKey, TParams = unknown>
   extends Array<BaseItem<TBase> | TParams> {
   all: () => Readonly<QueryAllArray<TBase>>;
 
   lists: () => Readonly<QueryListArray<TBase>>;
-  list: (key: string) => Readonly<QueryListArray<TBase>>;
+  list: (key: TKey) => Readonly<QueryListArray<TBase>>;
 
   details: () => Readonly<QueryDetailArray<TBase>>;
-  detail: (key: string) => Readonly<QueryDetailArray<TBase>>;
+  detail: (key: TKey) => Readonly<QueryDetailArray<TBase>>;
 
   actions: () => Readonly<QueryActionArray<TBase>>;
-  action: (action: string) => Readonly<QueryActionArray<TBase>>;
+  action: (action: TKey) => Readonly<QueryActionArray<TBase>>;
 
   params: (params: TParams) => Readonly<QueryParamsArray<TBase, TParams>>;
 }
 
-type QueryAllArray<T extends string, TParams = unknown> = QueryArrayBase<
+type QueryAllArray<T extends TKey, TParams = unknown> = QueryArrayBase<
   BaseItem<T>,
   TParams
 > &
   Array<unknown>;
 
-type QueryListArray<T extends string, TParams = unknown> = Pick<
+type QueryListArray<T extends TKey, TParams = unknown> = Pick<
   QueryAllArray<T, TParams>,
   "details" | "detail" | "params" | "actions" | "action"
 > &
   Array<unknown>;
 
-type QueryDetailArray<T extends string, TParams = unknown> = Pick<
+type QueryDetailArray<T extends TKey, TParams = unknown> = Pick<
   QueryAllArray<T, TParams>,
   "params" | "action" | "actions"
 > &
   Array<unknown>;
 
-type QueryActionArray<T extends string, TParams = unknown> = Pick<
+type QueryActionArray<T extends TKey, TParams = unknown> = Pick<
   QueryAllArray<T, TParams>,
   "params"
 > &
   Array<unknown>;
 
-type QueryParamsArray<TBase extends string, TParams> = QueryAllArray<
+type QueryParamsArray<TBase extends TKey, TParams> = QueryAllArray<
   TBase,
   TParams
 > &
@@ -247,7 +248,7 @@ const handlerLevelAction = {
   },
 };
 
-export const createQueryFactory = <TBase extends string, TParams = unknown>(
+export const createQueryFactory = <TBase extends TKey, TParams = unknown>(
   baseQuery: TBase
 ) =>
   new Proxy(
