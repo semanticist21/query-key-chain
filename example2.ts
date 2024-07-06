@@ -1,4 +1,4 @@
-import { queryChain } from "./src";
+import { queryChain } from "@kkoms/query-key-chain";
 
 queryChain("dashboard").lists();
 queryChain("dashboard").list(1);

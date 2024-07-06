@@ -1,6 +1,6 @@
 // dashboard.queries.ts
 import { queryOptions } from "@tanstack/react-query";
-import { createQueryFactory } from "./src";
+import { createQueryFactory } from "@kkoms/query-key-chain";
 
 // key declaration
 export const boardKeys = {
@@ -8,11 +8,11 @@ export const boardKeys = {
 
   all: () => boardKeys.base.all(),
 
-  lists: () => boardKeys.base.lists(),
-  list: (idx: number) => boardKeys.base.list(idx),
+  boardLists: () => boardKeys.base.lists(),
+  boardList: (idx: number) => boardKeys.base.list(idx),
 
-  details: (idx: number) => boardKeys.base.list(idx).details(),
-  detail: (idx: number, detail: string) => boardKeys.base.list(idx).detail(detail),
+  boardDetails: (idx: number) => boardKeys.boardList(idx).details(),
+  boardDetail: (idx: number, detail: string) => boardKeys.boardList(idx).detail(detail),
 
   modal: (id: string) =>
     boardKeys.base.detail(id).action("modal"),
@@ -24,7 +24,7 @@ export const boardKeys = {
 export const boardService = {
   getList: (page: number) =>
     queryOptions({
-      queryKey: boardKeys.list(page),
+      queryKey: boardKeys.boardList(page),
       queryFn: () => fetchDataByPage(page),
     }),
   ...
@@ -35,10 +35,13 @@ export const boardService = {
 queryClient.invalidateQueries(boardKeys.all());
 
 // this will invalidate queries inside boardKeys
-// lists, list, details, detail, modal
-// "doSome" key is not invalidated, as it directly declared by base.action("doSome")
+// "boardLists", "boardList", "boardDetails", "boardDetail".
+//
+// "modal", "doSome" key is not invalidated, 
+// as it directly declared without list chaining.
+//
 // list, detail, details works in the same way.
-queryClient.invalidateQueries(boardKeys.lists());
+queryClient.invalidateQueries(boardKeys.boardLists());
 
 // this will invalidate 'doSome' query key.
 queryClient.invalidateQueries(boardKeys.base.actions());
