@@ -64,8 +64,6 @@ import { createQueryFactory } from "./src";
 
 // key declaration
 export const boardKeys = {
-  // base key is always type of string
-  // therefore, beware not to be duplicated in somewhere!
   base: createQueryFactory("board"),
 
   all: () => boardKeys.base.all(),
@@ -73,11 +71,11 @@ export const boardKeys = {
   lists: () => boardKeys.base.lists(),
   list: (idx: number) => boardKeys.base.list(idx),
 
-  details: (idx: number) => boardKeys.list(idx).details(),
-  detail: (idx: number, detail: string) => boardKeys.list(idx).detail(detail),
+  details: (idx: number) => boardKeys.base.list(idx).details(),
+  detail: (idx: number, detail: string) => boardKeys.base.list(idx).detail(detail),
 
-  modal: (idx: number, detail: string) =>
-    boardKeys.detail(idx, detail).action("modal"),
+  modal: (id: string) =>
+    boardKeys.base.detail(id).action("modal"),
 
   doSome: (params: {action:boolean}) => boardKeys.base.action("doSome").params(params),
 } as const;
@@ -102,8 +100,9 @@ queryClient.invalidateQueries(boardKeys.all());
 // list, detail, details works in the same way.
 queryClient.invalidateQueries(boardKeys.lists());
 
-// this will invalidate 'doSome' action query key.
+// this will invalidate 'doSome' query key.
 queryClient.invalidateQueries(boardKeys.base.actions());
+
 ```
 
 Or you can use `queryChain` for simplicity.  

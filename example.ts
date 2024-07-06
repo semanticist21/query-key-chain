@@ -11,11 +11,11 @@ export const boardKeys = {
   lists: () => boardKeys.base.lists(),
   list: (idx: number) => boardKeys.base.list(idx),
 
-  details: (idx: number) => boardKeys.list(idx).details(),
-  detail: (idx: number, detail: string) => boardKeys.list(idx).detail(detail),
+  details: (idx: number) => boardKeys.base.list(idx).details(),
+  detail: (idx: number, detail: string) => boardKeys.base.list(idx).detail(detail),
 
-  modal: (idx: number, detail: string) =>
-    boardKeys.detail(idx, detail).action("modal"),
+  modal: (id: string) =>
+    boardKeys.base.detail(id).action("modal"),
 
   doSome: (params: {action:boolean}) => boardKeys.base.action("doSome").params(params),
 } as const;
