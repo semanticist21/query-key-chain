@@ -96,16 +96,17 @@ queryClient.invalidateQueries(boardKeys.all());
 
 // this will invalidate queries inside boardKeys
 // lists, list, details, detail, modal
-// "doSome" key is not invalidated because
+// "doSome" key is not invalidated, as it directly declared by base.action("doSome")
 // list, detail, details works in the same way.
 queryClient.invalidateQueries(boardKeys.lists());
 
 // this will invalidate 'doSome' query key.
 queryClient.invalidateQueries(boardKeys.base.actions());
 
+
 ```
 
-Or you can use `queryChain` for simplicity.  
+You can use `queryChain` for simplicity.  
 `queryChain` is same with `createQueryFactory`. All results are just an array of values, so with same inputs they are all related.
 
 ```typescript

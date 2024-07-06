@@ -2,7 +2,7 @@
   "name": "@kkoms/query-key-chain",
   "type": "module",
   "private": false,
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "A simple and functional query key management solution for React Query, using a cascading array structure.",
   "scripts": {
     "build": "vite build",
@@ -29,6 +29,7 @@
     "tanstack",
     "tanstack-query",
     "react-query",
+    "react query",
     "query-keys",
     "query key management",
     "cascade",

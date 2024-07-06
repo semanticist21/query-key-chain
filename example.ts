@@ -36,7 +36,7 @@ queryClient.invalidateQueries(boardKeys.all());
 
 // this will invalidate queries inside boardKeys
 // lists, list, details, detail, modal
-// "doSome" key is not invalidated because
+// "doSome" key is not invalidated, as it directly declared by base.action("doSome")
 // list, detail, details works in the same way.
 queryClient.invalidateQueries(boardKeys.lists());
 
