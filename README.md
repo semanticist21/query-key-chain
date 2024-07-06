@@ -20,8 +20,6 @@ A simple and functional query key management solution for React Query, using a c
     - [_.params(params: TParams)_](#paramsparams-tparams)
   - [License](#license)
 
-&#8203
-
 ## Installation
 
 To install `query-key-chain`, use npm, yarn or pnpm:
