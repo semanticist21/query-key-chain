@@ -124,9 +124,12 @@ test("query key test - chain:action > params", () => {
   const base = createQueryFactory("test");
   const match = ["test", "all", "action", "action-test", { test: 1 }];
 
-  const result = base.action("action-test").params({ test: 1 });
+  const action = base.action("action-test");
+  const result = action.params({ test: 1 });
+  const result2 = action.params({ test: 1, gg: 123 });
 
   expect(result).toEqual(match);
+  expect(result2).toEqual(match);
 });
 
 test("query key test - chain:list > detail", () => {

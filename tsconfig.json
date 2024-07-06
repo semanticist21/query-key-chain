@@ -23,5 +23,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "mock.ts", "example.ts"],
+  "exclude": ["./example.ts"]
 }
