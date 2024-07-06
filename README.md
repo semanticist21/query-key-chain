@@ -22,8 +22,6 @@ A simple and functional query key management solution for React Query, using a c
 
 ## Installation
 
-To install `query-key-chain`, use npm, yarn or pnpm:
-
 ```sh
 npm install @kkoms/query-key-chain
 
@@ -97,12 +95,11 @@ queryClient.invalidateQueries(boardKeys.all());
 //
 // "modal", "doSome" key is not invalidated,
 // as it directly declared without list chaining.
-//
-// list, detail, details works in the same way.
 queryClient.invalidateQueries(boardKeys.boardLists());
 
 // this will invalidate 'doSome' query key.
 queryClient.invalidateQueries(boardKeys.base.actions());
+
 
 ```
 
