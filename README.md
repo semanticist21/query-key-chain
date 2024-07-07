@@ -207,7 +207,9 @@ const queryKey = base.all();
 
 The lists method appends `'all'` and `'list'` to the array.
 
-It signifies a collection of lists. When `.all()` is invalidated, all cascading children, including those created with lists, are invalidated as well.
+It signifies a collection of lists.
+
+Invalidating with `.lists()` invalidates all cascading children, including those created with `list`.
 
 ```typescript
 // index.ts
@@ -222,7 +224,7 @@ const queryKey = base.lists();
 The list method appends `'all'`, `'list'`, and a specific key to the array.  
 This is useful for querying a specific list identified by the key.
 
-When `.lists()` is invalidated, It is invalidated together.
+When `.all()`, `.lists()` is invalidated, all cascading children are also invalidated.
 
 ```typescript
 const base = createQueryFactory("test");
@@ -238,7 +240,7 @@ It is used to represent a collection of detailed items.
 
 `'all'` is always included as the next segment after the base key, regardless of whether preceding chains like `list` have been used or not.
 
-When `.all()` is invalidated, all cascading children, including those created with details, are invalidated as well.
+Invalidating with `.details()` invalidates all cascading children, including those created with `detail`.
 
 Examples of usage:
 
@@ -267,7 +269,7 @@ This is useful for querying detailed information identified by the key.
 
 `'all'` is always included as the next segment after the base key, regardless of whether preceding chains like `list` have been used or not.
 
-When `.details()` or any preceding part of the chain is invalidated, all cascading children, including detail, are also invalidated.
+When `.all()`, `.details()` is invalidated, all cascading children are also invalidated.
 
 `base.detail("detail-test")`: Creates a query key ['test', 'all', 'detail', 'detail-test'].  
 `base.list("list-test").detail("detail-test")`: Creates a more specific query key under a list.
@@ -291,7 +293,7 @@ It is used to represent a collection of actions.
 
 `'all'` is always included as the next segment after the base key, regardless of whether preceding chains like `list`, `detail` have been used or not.
 
-When `.all()` or any preceding part of the chain (such as `list` or `detail`) is invalidated, all cascading children, including those created with actions, are also invalidated.
+Invalidating with `.actions()` invalidates all cascading children, including those created with `action`.
 
 ```typescript
 const base = createQueryFactory("test");
@@ -310,12 +312,10 @@ This is useful for querying a specific action identified by the key.
 
 `'all'` is always included as the next segment after the base key, regardless of whether preceding chains like `list`, `detail` have been used or not.
 
-When `.all()` is invalidated, all cascading children, including those created with details, are invalidated as well.
+When `.all()`, `.actions()` is invalidated, all cascading children are also invalidated.
 
 `base.action("action-test")`: Creates a query key ['test', 'all', 'action', 'action-test'].
 `base.list("list-test").detail("detail-test").action("action-test")`: Creates a more specific query key under list, detail.
-
-When `.actions()` or any preceding part of the chain (such as list or detail) is invalidated, all cascading children, including those created with action, are also invalidated.
 
 ```typescript
 const base = createQueryFactory("test");
