@@ -2,12 +2,12 @@
   "name": "@kkoms/query-key-chain",
   "type": "module",
   "private": false,
-  "version": "0.1.20",
+  "version": "0.1.21",
   "description": "A simple and functional query key management solution for React Query, using a cascading array structure.",
   "scripts": {
     "build": "vite build",
     "test": "jest --verbose false",
-    "publish-prod": "pnpm run build && pnpm run test && pnpm publish --access=public"
+    "publish-prod": "pnpm run test && pnpm run build && pnpm publish --access=public"
   },
   "exports": {
     ".": {
