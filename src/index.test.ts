@@ -245,9 +245,9 @@ test("query key type test - type:list", () => {
   expect(result).toEqual(match);
 });
 
-test("query key type test - type:lists", () => {
-  const match = ["1", "all", "list"];
-  const result = queryChain("1").lists();
+test("query key type test - type:action", () => {
+  const match = ["1", "all", "list", 3, "action", true];
+  const result = queryChain("1").list(3).action(true);
 
   expect(result).toEqual(match);
 });
