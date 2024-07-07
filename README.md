@@ -7,6 +7,7 @@ A simple and functional query key management solution for React Query, using a c
 - [@kkoms/query-key-chain](#kkomsquery-key-chain)
   - [Table of Contents](#table-of-contents)
   - [Installation](#installation)
+  - [Note](#note)
   - [Usage](#usage)
   - [Example](#example)
   - [API](#api)
@@ -28,7 +29,12 @@ npm install @kkoms/query-key-chain
 yarn add @kkoms/query-key-chain
 
 pnpm add @kkoms/query-key-chain
+
 ```
+
+## Note
+
+TypeScript is strongly recommended for better type safety and enhanced development experience.
 
 ## Usage
 
