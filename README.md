@@ -13,6 +13,8 @@ A simple and functional query key management solution for React Query, using a c
     - [Parameters](#parameters)
   - [Example](#example)
   - [API](#api)
+    - [_createQueryKey(key: string)_](#createquerykeykey-string)
+    - [_queryChain(key: string)_](#querychainkey-string)
     - [_.all()_](#all)
     - [_.lists()_](#lists)
     - [_.list(key: TKey)_](#listkey-tkey)
@@ -48,9 +50,9 @@ By leveraging the proxy API, query-key-chain attaches methods that represent dif
 
 ### Key Components
 
-`createQueryKey`: A utility function to initialize and create a query key chain. It sets up the base key and provides methods to build upon this key hierarchically.
+`createQueryKey(baseKey)`: A utility function to initialize and create a query key chain. It sets up the `base key` and provides methods to build upon this key hierarchically.
 
-`queryChain`: It is same with `createQueryKey`
+`queryChain(baseKey)`: It is same with `createQueryKey`
 
 This package supports a variety of functions to build complex query keys:
 
@@ -142,6 +144,21 @@ queryChain("dashboard").params({ action: true });
 ## API
 
 If you are already familiar with React Query's query key invalidation, you may not need to read this section.
+
+### _createQueryKey(key: string)_
+
+Initializes a query key chain with the given `base key` string.  
+It creates an array with a proxy wrapper that provides methods to handle the following APIs.
+
+```typescript
+// index.ts
+// ['test']
+const base = createQueryFactory("test");
+```
+
+### _queryChain(key: string)_
+
+It is same with `createQueryFactory`
 
 ### _.all()_
 
