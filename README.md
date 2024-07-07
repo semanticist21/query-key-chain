@@ -9,6 +9,8 @@ A simple and functional query key management solution for React Query, using a c
   - [Installation](#installation)
   - [Note](#note)
   - [Usage](#usage)
+    - [Key Components](#key-components)
+    - [Parameters](#parameters)
   - [Example](#example)
   - [API](#api)
     - [_.all()_](#all)
@@ -44,6 +46,12 @@ Each chain operation results in an array, with methods appending their segments 
 
 By leveraging the proxy API, query-key-chain attaches methods that represent different levels of the query key hierarchy, ensuring a clean, intuitive, and scalable API for complex query key management.
 
+### Key Components
+
+`createQueryKey`: A utility function to initialize and create a query key chain. It sets up the base key and provides methods to build upon this key hierarchically.
+
+`queryChain`: The core mechanism that allows chaining different methods to build complex query keys. Each method in the chain appends its segment to the existing key array, ensuring a structured and hierarchical query key.
+
 This package supports a variety of functions to build complex query keys:
 
 `.all()`: Represents the global or overarching query.  
@@ -51,6 +59,8 @@ This package supports a variety of functions to build complex query keys:
 `.details()` and `.detail(key)`: Handle detailed items and specific details.  
 `.actions()` and `.action(key)`: Define collections of actions and specific actions.  
 `.params(params)`: Append parameters to the query key for more specificity.
+
+### Parameters
 
 `baseKey` is a string which is base of the query key hierarchy. It serves as the foundation upon which further query keys are appended.
 
