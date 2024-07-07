@@ -292,7 +292,7 @@ test("query key type test - type:list>detail>action>params", () => {
     .params({ test: 3 });
 
   const match = ["test", "all", "list", "list-test", "detail", "detail-test"];
-  const second = queryChain("test").list("list-test").detail("detail-test");
+  const second = base.list("list-test").detail("detail-test");
 
   expect(second).toEqual(match);
 });
