@@ -38,7 +38,8 @@ pnpm add @kkoms/query-key-chain
 
 ## Note
 
-TypeScript is strongly recommended for better type safety and enhanced development experience.
+1. `TypeScript` is strongly recommended for better type safety and enhanced development experience.
+2. This package uses the `Proxy API`, Ensure **your target ECMAScript version** (ES6 and above) supports `Proxies`.
 
 ## Usage
 
