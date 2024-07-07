@@ -23,8 +23,9 @@ interface QueryArrayBase<
 
 type QueryAllArray<
   TBase extends string,
-  TKeyValue extends TKey
-> = QueryArrayBase<TBase, TKeyValue> & Array<unknown>;
+  TKeyValue extends TKey,
+  TParams = unknown
+> = QueryArrayBase<TBase, TKeyValue, TParams> & Array<unknown>;
 
 type QueryListArray<TBase extends string, TKeyValue extends TKey> = Pick<
   QueryAllArray<TBase, TKeyValue>,
@@ -48,7 +49,7 @@ type QueryParamsArray<
   TBase extends string,
   TKeyValue extends TKey,
   TParams = unknown
-> = QueryAllArray<TBase, TKeyValue> & Array<TBase | TKeyValue | TParams>;
+> = QueryAllArray<TBase, TKeyValue, TParams> & Array<unknown>;
 
 // key list
 const actionKeywords = ["params"];
@@ -77,7 +78,7 @@ const handlerLevelFirst = {
     }
 
     if (prop === "list") {
-      return function (key: string) {
+      return function (key: TKeyValue) {
         return new Proxy([...receiver.lists(), key], handlerLevelList);
       };
     }
@@ -89,7 +90,7 @@ const handlerLevelFirst = {
     }
 
     if (prop === "detail") {
-      return function (key: string) {
+      return function (key: TKeyValue) {
         return new Proxy([...receiver.details(), key], handlerLevelDetail);
       };
     }
@@ -101,13 +102,13 @@ const handlerLevelFirst = {
     }
 
     if (prop === "action") {
-      return function (action: string) {
+      return function (action: TKeyValue) {
         return new Proxy([...receiver.actions(), action], handlerLevelAction);
       };
     }
 
     if (prop === "params") {
-      return function (params: unknown) {
+      return function (params: TParams) {
         return [...receiver, params] as Readonly<
           QueryParamsArray<TBase, TKeyValue, TParams>
         >;
@@ -140,7 +141,7 @@ const handlerLevelList = {
     }
 
     if (prop === "detail") {
-      return function (key: string) {
+      return function (key: TKeyValue) {
         return new Proxy([...receiver.details(), key], handlerLevelDetail);
       };
     }
@@ -152,7 +153,7 @@ const handlerLevelList = {
     }
 
     if (prop === "action") {
-      return function (action: string) {
+      return function (action: TKeyValue) {
         return new Proxy([...receiver.actions(), action], handlerLevelAction);
       };
     }
@@ -191,13 +192,13 @@ const handlerLevelDetail = {
     }
 
     if (prop === "action") {
-      return function (action: string) {
+      return function (action: TKeyValue) {
         return new Proxy([...receiver.actions(), action], handlerLevelAction);
       };
     }
 
     if (prop === "params") {
-      return function (params: unknown) {
+      return function (params: TParams) {
         return [...receiver, params] as Readonly<
           QueryParamsArray<TBase, TKeyValue, TParams>
         >;
@@ -224,7 +225,7 @@ const handlerLevelAction = {
     receiver: Readonly<QueryArrayBase<TBase, TKeyValue>>
   ) {
     if (prop === "params") {
-      return function (params: unknown) {
+      return function (params: TParams) {
         return [...receiver, params] as Readonly<
           QueryParamsArray<TBase, TKeyValue, TParams>
         >;
