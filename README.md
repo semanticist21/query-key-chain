@@ -50,7 +50,7 @@ By leveraging the proxy API, query-key-chain attaches methods that represent dif
 
 `createQueryKey`: A utility function to initialize and create a query key chain. It sets up the base key and provides methods to build upon this key hierarchically.
 
-`queryChain`: The core mechanism that allows chaining different methods to build complex query keys. Each method in the chain appends its segment to the existing key array, ensuring a structured and hierarchical query key.
+`queryChain`: It is same with `createQueryKey`
 
 This package supports a variety of functions to build complex query keys:
 
