@@ -99,7 +99,7 @@ queryClient.invalidateQueries(boardKeys.all());
 // "boardLists", "boardList", "boardDetails", "boardDetail".
 //
 // "modal", "doSome" key is not invalidated,
-// as it directly declared without list chaining.
+// as they are directly declared without list chaining.
 queryClient.invalidateQueries(boardKeys.boardLists());
 
 // this will invalidate 'doSome' query key.
@@ -138,7 +138,9 @@ but for semantic purpose it is recommended to use _`.all()`_.
 ```typescript
 // index.ts
 const base = createQueryFactory("test");
-const queryKey = base.all(); // ['test', 'all']
+
+// ['test', 'all']
+const queryKey = base.all();
 ```
 
 ### _.lists()_
@@ -150,7 +152,9 @@ It signifies a collection of lists. When _`all()`_ is invalidated, all cascading
 ```typescript
 // index.ts
 const base = createQueryFactory("test");
-const queryKey = base.lists(); // ['test', 'all', 'list']
+
+// ['test', 'all', 'list']
+const queryKey = base.lists();
 ```
 
 ### _.list(key: TKey)_
@@ -162,7 +166,9 @@ When _`lists()`_ is invalidated, It is invalidated together.
 
 ```typescript
 const base = createQueryFactory("test");
-const queryKey = base.list("list-test"); // ['test', 'all', 'list', 'list-test']
+
+// ['test', 'all', 'list', 'list-test']
+const queryKey = base.list("list-test");
 ```
 
 ### _.details()_
@@ -184,7 +190,12 @@ In the above example, invalidating list("list-test") or any preceding chain part
 
 ```typescript
 const base = createQueryFactory("test");
-const queryKey = base.details(); // ['test', 'all', 'detail']
+
+// ['test', 'all', 'list', 'list-test', 'detail']
+const queryKey = base.list("list-test").details();
+
+// ['test', 'all', 'detail']
+const queryKey2 = base.details();
 ```
 
 ### _.detail(key: TKey)_
@@ -201,7 +212,12 @@ Invalidating any part of the chain invalidates all cascading children.
 
 ```typescript
 const base = createQueryFactory("test");
-const queryKey = base.detail("detail-test"); // ['test', 'all', 'detail', 'detail-test']
+
+// ['test', 'all', 'list', 'list-test', 'detail', 'detail-test']
+const queryKey = base.list("list-test").detail("detail-test");
+
+// ['test', 'all', 'detail', 'detail-test']
+const queryKey2 = base.detail("detail-test");
 ```
 
 ### _.actions()_
@@ -213,7 +229,12 @@ When all() or any preceding part of the chain (such as list or detail) is invali
 
 ```typescript
 const base = createQueryFactory("test");
-const queryKey = base.actions(); // ['test', 'all', 'action']
+
+// ['test', 'all', 'list', 'list-test', 'detail', 'detail-test', 'action']
+const queryKey = base.list("list-test").detail("detail-test").actions();
+
+// ['test', 'all', 'action']
+const queryKey2 = base.actions();
 ```
 
 ### _.action(key: TKey)_
@@ -228,7 +249,15 @@ When actions() or any preceding part of the chain (such as list or detail) is in
 
 ```typescript
 const base = createQueryFactory("test");
-const queryKey = base.action("action-test"); // ['test', 'all', 'action', 'action-test']
+
+// ['test', 'all', 'list', 'list-test', 'detail', 'detail-test', 'action', ''action-test']
+const queryKey = base
+  .list("list-test")
+  .detail("detail-test")
+  .action("action-test");
+
+// ['test', 'all', 'action', 'action-test']
+const queryKey = base.action("action-test");
 ```
 
 ### _.params(params: TParams)_
@@ -236,12 +265,21 @@ const queryKey = base.action("action-test"); // ['test', 'all', 'action', 'actio
 The params method appends parameters to the query key. This is useful for adding query parameters to the key.
 
 When the parent query key or any preceding part of the chain (such as list, detail, or action) is invalidated, this key will be also invalidated.
+
 As this is the final element of the array, no cascading furthermore.
 
 ```typescript
 const base = createQueryFactory("test");
-const queryKey = base.action("action-test").params({ test: 3 });
+
+// ['test', 'all', 'list', 'list-test', 'detail', 'detail-test', 'action', ''action-test', { test: 3 }]
+const queryKey = base
+  .list("list-test")
+  .detail("detail-test")
+  .action("action-test")
+  .params({ test: 3 });
+
 // ['test', 'all', 'action', 'action-test', { test: 3 }]
+const queryKey = base.action("action-test").params({ test: 3 });
 ```
 
 ## License

@@ -38,7 +38,7 @@ queryClient.invalidateQueries(boardKeys.all());
 // "boardLists", "boardList", "boardDetails", "boardDetail".
 //
 // "modal", "doSome" key is not invalidated, 
-// as it directly declared without list chaining.
+// as they are directly declared without list chaining.
 queryClient.invalidateQueries(boardKeys.boardLists());
 
 // this will invalidate 'doSome' query key.
