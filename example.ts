@@ -1,5 +1,5 @@
 // dashboard.queries.ts
-import { queryOptions } from "@tanstack/react-query";
+import { queryOptions, useQueryClient } from "@tanstack/react-query";
 import { createQueryFactory } from "@kkoms/query-key-chain";
 
 // key declaration
@@ -38,14 +38,14 @@ export const boardService = {
 
 // invalidate queries
 // this will invalidate all queries inside boardKeys
-queryClient.invalidateQueries(boardKeys.all());
+queryClient.invalidateQueries({queryKey:boardKeys.all()});
 
 // this will invalidate queries inside boardKeys
 // "boardLists", "boardList", "boardDetails", "boardDetail".
 //
 // "modal", "doSome", "baseParams" key is not invalidated, 
 // as they are directly declared without list chaining.
-queryClient.invalidateQueries(boardKeys.boardLists());
+queryClient.invalidateQueries({queryKey:boardKeys.boardLists()});
 
 // this will invalidate 'doSome' query key.
-queryClient.invalidateQueries(boardKeys.base.actions());
+queryClient.invalidateQueries({queryKey:boardKeys.base.actions()});
