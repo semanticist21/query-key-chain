@@ -24,7 +24,9 @@ export interface BaseQuery<TBase extends string> extends Array<TBase> {
 }
 
 // all
-export type QueryAllArray<TBase extends string> = Array<TBase | "all">;
+export type QueryAllArray<TBase extends string> = Readonly<
+  Array<TBase | "all">
+>;
 
 // list
 export interface QueryListArray<
