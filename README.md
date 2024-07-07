@@ -151,12 +151,20 @@ You can use `queryChain` for simplicity.
 ```typescript
 import { queryChain } from "@kkoms/query-key-chain";
 
+// dashboard lists
 queryChain("dashboard").lists();
 queryChain("dashboard").list(1);
+queryChain("dashboard").list(1).detail(1);
+queryChain("dashboard").list(1).detail(1).action("modal");
+
+// dashboard details
 queryChain("dashboard").details();
 queryChain("dashboard").detail(1);
 queryChain("dashboard").detail(1).action("modal");
 queryChain("dashboard").detail(1).action("modal").params({ action: true });
+
+// dashboard with only params
+// invalidation only by .all()
 queryChain("dashboard").params({ action: true });
 ```
 
@@ -342,6 +350,11 @@ const queryKey = base
 
 // ['test', 'all', 'action', 'action-test', { test: 3 }]
 const queryKey = base.action("action-test").params({ test: 3 });
+
+// or you can use just like this.
+// bound to only 'all' invalidation.
+// ['test', 'all', { test: 3 }]
+const queryKey2 = base.params({ test: 3 });
 ```
 
 ## License
