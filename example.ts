@@ -3,6 +3,8 @@ import { queryOptions } from "@tanstack/react-query";
 import { createQueryFactory } from "@kkoms/query-key-chain";
 
 // key declaration
+// here, all keys are each unique arrays
+// so, you can use them as query key directly.
 export const boardKeys = {
   base: createQueryFactory("board"),
 
