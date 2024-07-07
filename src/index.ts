@@ -48,19 +48,10 @@ type QueryParamsArray<TBase extends TKey, TParams> = QueryAllArray<
   Array<unknown>;
 
 // key list
-const allKeywords = [
-  "all",
-  "lists",
-  "list",
-  "details",
-  "detail",
-  "actions",
-  "action",
-  "params",
-];
-const listKeywords = ["details", "detail", "actions", "action", "params"];
-const detailKeywords = ["actions", "action", "params"];
 const actionKeywords = ["params"];
+const detailKeywords = ["actions", "action", ...actionKeywords];
+const listKeywords = ["details", "detail", ...detailKeywords];
+const allKeywords = ["all", "lists", "list", ...listKeywords];
 
 const handlerLevelFirst = {
   get<TBase extends string, TParams = unknown>(
@@ -251,6 +242,8 @@ const handlerLevelAction = {
 export const createQueryFactory = <TBase extends TKey, TParams = unknown>(
   baseQuery: TBase
 ) =>
-  new Proxy([baseQuery], handlerLevelFirst) as QueryArrayBase<TBase, TParams>;
+  new Proxy([baseQuery], handlerLevelFirst) as Readonly<
+    QueryArrayBase<TBase, TParams>
+  >;
 
 export const queryChain = createQueryFactory;
