@@ -45,9 +45,9 @@ pnpm add @kkoms/query-key-chain
 
 `query-key-chain` provides an efficient method for managing query keys in **TanStack React Query** using a hierarchical and functional approach.
 
-Each chain operation results in an array, with methods appending their segments to this array.
+Each chain produces an array, with methods appending their respective segments to it.
 
-By leveraging the proxy API, query-key-chain attaches methods that represent different levels of the query key hierarchy, ensuring a clean, intuitive, and scalable API for complex query key management.
+By leveraging the proxy API, `query-key-chain` attaches methods representing different query key levels, ensuring a clean, intuitive, and scalable API for complex query key management.
 
 ### Key Components
 
@@ -284,7 +284,7 @@ This is useful for querying a specific action identified by the key.
 `base.action("action-test")`: Creates a query key ['test', 'all', 'action', 'action-test'].
 `base.list("list-test").detail("detail-test").action("action-test")`: Creates a more specific query key under list, detail.
 
-When actions() or any preceding part of the chain (such as list or detail) is invalidated, all cascading children, including those created with action, are also invalidated.
+When `actions()` or any preceding part of the chain (such as list or detail) is invalidated, all cascading children, including those created with action, are also invalidated.
 
 ```typescript
 const base = createQueryFactory("test");
@@ -305,7 +305,7 @@ The params method appends parameters to the query key. This is useful for adding
 
 When the parent query key or any preceding part of the chain (such as list, detail, or action) is invalidated, this key will be also invalidated.
 
-As this is the final element of the array, no cascading furthermore.
+As this is the final element of the array, no further cascading occurs.
 
 ```typescript
 const base = createQueryFactory("test");
