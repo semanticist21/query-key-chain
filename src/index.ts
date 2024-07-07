@@ -1,51 +1,54 @@
 type TKey = string | number | symbol | boolean | bigint;
-type BaseItem<T extends TKey> = T | string;
 
-interface QueryArrayBase<TBase extends TKey, TParams = unknown>
-  extends Array<BaseItem<TBase> | TParams> {
-  all: () => Readonly<QueryAllArray<TBase>>;
+interface QueryArrayBase<
+  TBase extends string,
+  TKeyValue extends TKey,
+  TParams = unknown
+> extends Array<TBase | TKeyValue | TParams> {
+  all: () => Readonly<QueryAllArray<TBase, TKeyValue>>;
 
-  lists: () => Readonly<QueryListArray<TBase>>;
-  list: (key: TKey) => Readonly<QueryListArray<TBase>>;
+  lists: () => Readonly<QueryListArray<TBase, TKeyValue>>;
+  list: (key: TKey) => Readonly<QueryListArray<TBase, TKeyValue>>;
 
-  details: () => Readonly<QueryDetailArray<TBase>>;
-  detail: (key: TKey) => Readonly<QueryDetailArray<TBase>>;
+  details: () => Readonly<QueryDetailArray<TBase, TKeyValue>>;
+  detail: (key: TKey) => Readonly<QueryDetailArray<TBase, TKeyValue>>;
 
-  actions: () => Readonly<QueryActionArray<TBase>>;
-  action: (action: TKey) => Readonly<QueryActionArray<TBase>>;
+  actions: () => Readonly<QueryActionArray<TBase, TKeyValue>>;
+  action: (action: TKey) => Readonly<QueryActionArray<TBase, TKeyValue>>;
 
-  params: (params: TParams) => Readonly<QueryParamsArray<TBase, TParams>>;
+  params: (
+    params: TParams
+  ) => Readonly<QueryParamsArray<TBase, TKeyValue, TParams>>;
 }
 
-type QueryAllArray<T extends TKey, TParams = unknown> = QueryArrayBase<
-  BaseItem<T>,
-  TParams
-> &
-  Array<unknown>;
+type QueryAllArray<
+  TBase extends string,
+  TKeyValue extends TKey
+> = QueryArrayBase<TBase, TKeyValue> & Array<unknown>;
 
-type QueryListArray<T extends TKey, TParams = unknown> = Pick<
-  QueryAllArray<T, TParams>,
+type QueryListArray<TBase extends string, TKeyValue extends TKey> = Pick<
+  QueryAllArray<TBase, TKeyValue>,
   "details" | "detail" | "params" | "actions" | "action"
 > &
   Array<unknown>;
 
-type QueryDetailArray<T extends TKey, TParams = unknown> = Pick<
-  QueryAllArray<T, TParams>,
+type QueryDetailArray<TBase extends string, TKeyValue extends TKey> = Pick<
+  QueryAllArray<TBase, TKeyValue>,
   "params" | "action" | "actions"
 > &
   Array<unknown>;
 
-type QueryActionArray<T extends TKey, TParams = unknown> = Pick<
-  QueryAllArray<T, TParams>,
+type QueryActionArray<TBase extends string, TKeyValue extends TKey> = Pick<
+  QueryAllArray<TBase, TKeyValue>,
   "params"
 > &
   Array<unknown>;
 
-type QueryParamsArray<TBase extends TKey, TParams> = QueryAllArray<
-  TBase,
-  TParams
-> &
-  Array<unknown>;
+type QueryParamsArray<
+  TBase extends string,
+  TKeyValue extends TKey,
+  TParams = unknown
+> = QueryAllArray<TBase, TKeyValue> & Array<TBase | TKeyValue | TParams>;
 
 // key list
 const actionKeywords = ["params"];
@@ -54,14 +57,16 @@ const listKeywords = ["details", "detail", ...detailKeywords];
 const allKeywords = ["all", "lists", "list", ...listKeywords];
 
 const handlerLevelFirst = {
-  get<TBase extends string, TParams = unknown>(
+  get<TBase extends string, TKeyValue extends TKey, TParams = unknown>(
     target: Readonly<Array<unknown>>,
     prop: unknown,
-    receiver: Readonly<QueryArrayBase<TBase, TParams>>
+    receiver: Readonly<QueryArrayBase<TBase, TKeyValue>>
   ) {
     if (prop === "all") {
       return function () {
-        return [...receiver, "all"] as Readonly<QueryAllArray<TBase>>;
+        return [...receiver, "all"] as Readonly<
+          QueryAllArray<TBase, TKeyValue>
+        >;
       };
     }
 
@@ -104,7 +109,7 @@ const handlerLevelFirst = {
     if (prop === "params") {
       return function (params: unknown) {
         return [...receiver, params] as Readonly<
-          QueryParamsArray<TBase, TParams>
+          QueryParamsArray<TBase, TKeyValue, TParams>
         >;
       };
     }
@@ -123,10 +128,10 @@ const handlerLevelFirst = {
 };
 
 const handlerLevelList = {
-  get<TBase extends string, TParams = unknown>(
+  get<TBase extends string, TKeyValue extends TKey, TParams = unknown>(
     target: Readonly<Array<unknown>>,
     prop: unknown,
-    receiver: Readonly<QueryListArray<TBase, TParams>>
+    receiver: Readonly<QueryListArray<TBase, TKeyValue>>
   ) {
     if (prop === "details") {
       return function () {
@@ -155,7 +160,7 @@ const handlerLevelList = {
     if (prop === "params") {
       return function (params: unknown) {
         return [...receiver, params] as Readonly<
-          QueryParamsArray<TBase, TParams>
+          QueryParamsArray<TBase, TKeyValue, TParams>
         >;
       };
     }
@@ -174,10 +179,10 @@ const handlerLevelList = {
 };
 
 const handlerLevelDetail = {
-  get<TBase extends string, TParams = unknown>(
+  get<TBase extends string, TKeyValue extends TKey, TParams = unknown>(
     target: Readonly<Array<unknown>>,
     prop: unknown,
-    receiver: Readonly<QueryDetailArray<TBase, TParams>>
+    receiver: Readonly<QueryDetailArray<TBase, TKeyValue>>
   ) {
     if (prop === "actions") {
       return function () {
@@ -194,7 +199,7 @@ const handlerLevelDetail = {
     if (prop === "params") {
       return function (params: unknown) {
         return [...receiver, params] as Readonly<
-          QueryParamsArray<TBase, TParams>
+          QueryParamsArray<TBase, TKeyValue, TParams>
         >;
       };
     }
@@ -213,15 +218,15 @@ const handlerLevelDetail = {
 };
 
 const handlerLevelAction = {
-  get<TBase extends string, TParams = unknown>(
+  get<TBase extends string, TKeyValue extends TKey, TParams = unknown>(
     target: Readonly<Array<unknown>>,
     prop: unknown,
-    receiver: Readonly<QueryArrayBase<TBase, TParams>>
+    receiver: Readonly<QueryArrayBase<TBase, TKeyValue>>
   ) {
     if (prop === "params") {
       return function (params: unknown) {
         return [...receiver, params] as Readonly<
-          QueryParamsArray<TBase, TParams>
+          QueryParamsArray<TBase, TKeyValue, TParams>
         >;
       };
     }
@@ -239,11 +244,15 @@ const handlerLevelAction = {
   },
 };
 
-export const createQueryFactory = <TBase extends TKey, TParams = unknown>(
+export const createQueryFactory = <
+  TBase extends string,
+  TKeyValue extends TKey,
+  TParams = unknown
+>(
   baseQuery: TBase
 ) =>
   new Proxy([baseQuery], handlerLevelFirst) as Readonly<
-    QueryArrayBase<TBase, TParams>
+    QueryArrayBase<TBase, TKeyValue, TParams>
   >;
 
 export const queryChain = createQueryFactory;

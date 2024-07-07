@@ -224,37 +224,47 @@ test("query key test - chain:list > action > params", () => {
 });
 
 test("query key type test - chain:list > params", () => {
-  const match = [-3, "all", "list", -2, { test: 3 }];
-  const result = queryChain(-3).list(-2).params({ test: 3 });
+  const match = ["-3", "all", "list", -2, { test: 3 }];
+  const result = queryChain("-3").list(-2).params({ test: 3 });
 
   expect(result).toEqual(match);
 });
 
 // type
 test("query key type test - type:lists", () => {
-  const match = [true, "all", "list"];
-  const result = queryChain(true).lists();
+  const match = ["true", "all", "list"];
+  const result = queryChain("true").lists();
 
   expect(result).toEqual(match);
 });
 
 test("query key type test - type:list", () => {
-  const match = [1, "all", "list", true, "action", 0];
-  const result = queryChain(1).list(true).action(0);
+  const match = ["1", "all", "list", true, "action", "0"];
+  const result = queryChain("1").list(true).action("0");
 
   expect(result).toEqual(match);
 });
 
 test("query key type test - type:lists", () => {
-  const match = [1, "all", "list"];
-  const result = queryChain(1).lists();
+  const match = ["1", "all", "list"];
+  const result = queryChain("1").lists();
 
   expect(result).toEqual(match);
 });
 
 test("query key type test - type:list>detail>action>params", () => {
-  const match = [-3, "all", "list", -2, "detail", -1, "action", 3, { test: 3 }];
-  const result = queryChain(-3)
+  const match = [
+    "-3",
+    "all",
+    "list",
+    -2,
+    "detail",
+    -1,
+    "action",
+    3,
+    { test: 3 },
+  ];
+  const result = queryChain("-3")
     .list(-2)
     .detail(-1)
     .action(3)
@@ -265,7 +275,7 @@ test("query key type test - type:list>detail>action>params", () => {
 
 // has test
 test("query key type test - type:list>detail>action>params", () => {
-  const has = "list" in queryChain(1);
+  const has = "list" in queryChain("1");
 
   expect(has).toBe(true);
 });
