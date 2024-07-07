@@ -12,6 +12,7 @@ A simple and functional query key management solution for React Query, using a c
     - [Key Components](#key-components)
     - [Parameters](#parameters)
     - [Type Safety](#type-safety)
+  - [Example](#example)
   - [API](#api)
     - [_createQueryKey(key: string)_](#createquerykeykey-string)
     - [_queryChain(key: string)_](#querychainkey-string)
@@ -77,9 +78,13 @@ All function results are simply unique extensions of a single array, making them
 
 With TypeScript, each method call in the chain ensures type safety, producing a read-only array that reflects the current state of the chain. For example:
 
-````typescript
-const queryKey = base.list("list-test").detail("detail-test").action("action-test");
+```typescript
+const queryKey = base
+  .list("list-test")
+  .detail("detail-test")
+  .action("action-test");
 // type Readonly<QueryActionArray<"test", "list-test", "detail-test", "action-test">>
+```
 
 ## Example
 
@@ -138,7 +143,7 @@ queryClient.invalidateQueries(boardKeys.boardLists());
 // this will invalidate 'doSome' query key.
 queryClient.invalidateQueries(boardKeys.base.actions());
 
-````
+```
 
 You can use `queryChain` for simplicity.  
 `queryChain` is same with `createQueryFactory`. All results are just an array of values, so with same inputs they are all related.
