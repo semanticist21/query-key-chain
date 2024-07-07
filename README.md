@@ -83,21 +83,27 @@ import { queryOptions } from "@tanstack/react-query";
 import { createQueryFactory } from "@kkoms/query-key-chain";
 
 // key declaration
+// here, all keys are each unique arrays.
+// so, you can use them inside query key options directly.
 export const boardKeys = {
   base: createQueryFactory("board"),
 
   all: () => boardKeys.base.all(),
 
+  // with 'list' keys
   boardLists: () => boardKeys.base.lists(),
   boardList: (idx: number) => boardKeys.base.list(idx),
 
   boardDetails: (idx: number) => boardKeys.boardList(idx).details(),
   boardDetail: (idx: number, detail: string) => boardKeys.boardList(idx).detail(detail),
 
+  // separate keys
   modal: (id: string) =>
     boardKeys.base.detail(id).action("modal"),
 
   doSome: (params: {action:boolean}) => boardKeys.base.action("doSome").params(params),
+
+  baseParams: (params: {test:boolean}) => boardKeys.base.params(params),
 } as const;
 
 // query options
@@ -117,13 +123,12 @@ queryClient.invalidateQueries(boardKeys.all());
 // this will invalidate queries inside boardKeys
 // "boardLists", "boardList", "boardDetails", "boardDetail".
 //
-// "modal", "doSome" key is not invalidated,
+// "modal", "doSome", "baseParams" key is not invalidated,
 // as they are directly declared without list chaining.
 queryClient.invalidateQueries(boardKeys.boardLists());
 
 // this will invalidate 'doSome' query key.
 queryClient.invalidateQueries(boardKeys.base.actions());
-
 
 ```
 
@@ -163,7 +168,7 @@ It is same with `createQueryFactory`
 
 ### _.all()_
 
-The all method appends all to the query key.  
+The all method appends `'all'` to the base query key array.  
 It is typically used to denote a global or to invalidate all related query keys.
 
 You can invalidate queries using just `base` too,  
@@ -179,7 +184,7 @@ const queryKey = base.all();
 
 ### _.lists()_
 
-The lists method appends all and list to the query key.
+The lists method appends `'all'` and `'list'` to the array.
 
 It signifies a collection of lists. When _`all()`_ is invalidated, all cascading children, including those created with lists, are invalidated as well.
 
@@ -193,7 +198,7 @@ const queryKey = base.lists();
 
 ### _.list(key: TKey)_
 
-The list method appends all, list, and a specific key to the query key.  
+The list method appends `'all'`, `'list'`, and a specific key to the array.  
 This is useful for querying a specific list identified by the key.
 
 When _`lists()`_ is invalidated, It is invalidated together.
@@ -207,7 +212,7 @@ const queryKey = base.list("list-test");
 
 ### _.details()_
 
-The details method appends all and detail to the query key.  
+The details method appends `'detail'` to the preceding array.  
 It is used to represent a collection of detailed items.
 
 When \_all() is invalidated, all cascading children, including those created with details, are invalidated as well.
@@ -234,7 +239,7 @@ const queryKey2 = base.details();
 
 ### _.detail(key: TKey)_
 
-The detail method appends all, detail, and a specific key to the query key.  
+The detail method appends `detail` and a specific key to the preceding array.  
 This is useful for querying detailed information identified by the key.
 
 When details() or any preceding part of the chain is invalidated, all cascading children, including detail, are also invalidated.
@@ -256,7 +261,7 @@ const queryKey2 = base.detail("detail-test");
 
 ### _.actions()_
 
-The actions method appends all and action to the query key.  
+The actions method appends `'action'` to the preceding array.  
 It is used to represent a collection of actions.
 
 When all() or any preceding part of the chain (such as list or detail) is invalidated, all cascading children, including those created with actions, are also invalidated.
@@ -273,7 +278,7 @@ const queryKey2 = base.actions();
 
 ### _.action(key: TKey)_
 
-The action method appends all, action, and a specific key to the query key.  
+The action method appends `action` and a specific key to the preceding array.  
 This is useful for querying a specific action identified by the key.
 
 `base.action("action-test")`: Creates a query key ['test', 'all', 'action', 'action-test'].
