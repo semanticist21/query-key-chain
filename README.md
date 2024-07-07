@@ -163,7 +163,7 @@ It is same with `createQueryFactory`
 ### _.all()_
 
 The all method appends all to the query key.  
-It is typically used to denote a global or invalidating all related query keys.
+It is typically used to denote a global or to invalidate all related query keys.
 
 You can invalidate queries using just `base` too,  
 but for semantic purpose it is recommended to use _`.all()`_.
