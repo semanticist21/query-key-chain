@@ -206,7 +206,18 @@ const handlerLevelAction = {
   },
 };
 
+const createQueryKey = <TBase extends string>(baseQuery: TBase) =>
+  new Proxy([baseQuery], handlerLevelBase) as Readonly<BaseQuery<TBase>>;
+
+export const keyChain = createQueryKey;
+
+/**
+ * @deprecated use `createQueryKey` instead
+ */
 export const createQueryFactory = <TBase extends string>(baseQuery: TBase) =>
   new Proxy([baseQuery], handlerLevelBase) as Readonly<BaseQuery<TBase>>;
 
+/**
+ * @deprecated use `keyChain` instead
+ */
 export const queryChain = createQueryFactory;
