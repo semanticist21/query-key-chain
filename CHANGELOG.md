@@ -16,3 +16,9 @@ All notable changes to this project will be documented in this file.
 Type names ends with `QueryArray` has been changed to name with ending `Key` or `Keys`
 
 Updated README.md.
+
+## [0.4.4] - 2024-07-08
+
+### Fixed
+
+Fixed a bug in the typing for `createQueryKeyFactory`.

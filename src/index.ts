@@ -218,10 +218,8 @@ const handlerLevelAction = {
 export const createQueryKeyFactory = <TBaseArray extends Array<string>>(
   ...keys: TBaseArray
 ) => {
-  return (baseQuery: (typeof keys)[number]) =>
-    new Proxy([baseQuery], handlerLevelBase) as Readonly<
-      BaseKey<(typeof keys)[number]>
-    >;
+  return <T extends (typeof keys)[number]>(baseQuery: T) =>
+    new Proxy([baseQuery], handlerLevelBase) as Readonly<BaseKey<T>>;
 };
 
 /**
