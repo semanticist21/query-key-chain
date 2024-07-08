@@ -53,9 +53,11 @@ By leveraging the proxy API, `query-key-chain` attaches methods representing dif
 
 ### Key Components
 
+`createQueryKeyFactory(...keys)`: A utility function that initializes a query key factory with multiple base keys and returns a `createQueryKey` function for accessing these keys with type safety.
+
 `createQueryKey(baseKey)`: A utility function to initialize and create a query key chain. It sets up the `base key` and provides methods to build upon this key hierarchically.
 
-`keyChain(baseKey)`: It is same with `createQueryKey`
+`keyChain(baseKey)`: Another name for `createQueryKey` used for brevity.
 
 This package supports a variety of functions to build complex query keys:
 
