@@ -299,29 +299,29 @@ test("query key type test - type:list>detail>action>params", () => {
 
 // query key factory
 test("query key factory test", () => {
-  const keyStore = createQueryKeyFactory("1", "2", "3", "4");
+  const chain = createQueryKeyFactory("1", "2", "3", "4");
 
-  keyStore("1");
-  keyStore("2");
-  keyStore("3");
-  keyStore("4");
+  chain("1");
+  chain("2");
+  chain("3");
+  chain("4");
 
   // @ts-expect-error for test
-  keyStore("5");
+  chain("5");
 });
 
 test("query key factory spread test", () => {
   const keys = ["1", "2", "3", "4"] as const;
 
-  const keyStore = createQueryKeyFactory(...keys);
+  const chain = createQueryKeyFactory(...keys);
 
-  keyStore("1");
-  keyStore("2");
-  keyStore("3");
-  keyStore("4");
+  chain("1");
+  chain("2");
+  chain("3");
+  chain("4");
 
   // @ts-expect-error for test
-  keyStore("5");
+  chain("5");
 });
 
 // performance

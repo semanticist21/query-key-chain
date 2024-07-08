@@ -28,10 +28,10 @@ export const boardKeys = {
 
 // query options
 export const boardService = {
-  getList: (page: number) =>
+  getList: (page: number, params: ListParams) =>
     queryOptions({
-      queryKey: boardKeys.boardList(page),
-      queryFn: () => fetchDataByPage(page),
+      queryKey: boardKeys.boardList(page).params(params),
+      queryFn: () => fetchDataByPage(page, params),
     }),
   ...
 };

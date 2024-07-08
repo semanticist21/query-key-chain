@@ -14,8 +14,9 @@ A simple and functional query key management solution for React Query, using a c
     - [Type Safety](#type-safety)
   - [Example](#example)
   - [API](#api)
+    - [_createQueryKeyFactory(key: TBase\[\])_](#createquerykeyfactorykey-tbase)
     - [_createQueryKey(key: string)_](#createquerykeykey-string)
-    - [_queryChain(key: string)_](#querychainkey-string)
+    - [_keyChain(key: string)_](#keychainkey-string)
     - [_.all()_](#all)
     - [_.lists()_](#lists)
     - [_.list(key: TKey)_](#listkey-tkey)
@@ -54,7 +55,7 @@ By leveraging the proxy API, `query-key-chain` attaches methods representing dif
 
 `createQueryKey(baseKey)`: A utility function to initialize and create a query key chain. It sets up the `base key` and provides methods to build upon this key hierarchically.
 
-`queryChain(baseKey)`: It is same with `createQueryKey`
+`keyChain(baseKey)`: It is same with `createQueryKey`
 
 This package supports a variety of functions to build complex query keys:
 
@@ -92,14 +93,14 @@ Here's an example of how to use query-key-chain in a React project with React Qu
 
 ```typescript
 // dashboard.queries.ts
-import { queryOptions } from "@tanstack/react-query";
-import { createQueryFactory } from "@kkoms/query-key-chain";
+import { queryOptions, useQueryClient } from "@tanstack/react-query";
+import { createQueryKey } from "@kkoms/query-key-chain";
 
 // key declaration
 // here, all keys are each unique arrays.
 // so, you can use them inside query key options directly.
 export const boardKeys = {
-  base: createQueryFactory("board"),
+  base: createQueryKey("board"),
 
   all: () => boardKeys.base.all(),
 
@@ -121,10 +122,10 @@ export const boardKeys = {
 
 // query options
 export const boardService = {
-  getList: (page: number) =>
+  getList: (page: number, params: ListParams) =>
     queryOptions({
-      queryKey: boardKeys.boardList(page),
-      queryFn: () => fetchDataByPage(page),
+      queryKey: boardKeys.boardList(page).params(params),
+      queryFn: () => fetchDataByPage(page, params),
     }),
   ...
 };
@@ -143,34 +144,67 @@ queryClient.invalidateQueries({queryKey:boardKeys.boardLists()});
 // this will invalidate 'doSome' query key.
 queryClient.invalidateQueries({queryKey:boardKeys.base.actions()});
 
+
 ```
 
-You can use `queryChain` for simplicity.  
-`queryChain` is same with `createQueryFactory`. All results are just an array of values, so with same inputs they are all related.
+You can use `keyChain` for simplicity.  
+`keyChain` is same with `createQueryKey`. All results are just an array of values, so with same inputs they are all related.
 
 ```typescript
-import { queryChain } from "@kkoms/query-key-chain";
+import { keyChain } from "@kkoms/query-key-chain";
 
 // dashboard lists
-queryChain("dashboard").lists();
-queryChain("dashboard").list(1);
-queryChain("dashboard").list(1).detail(1);
-queryChain("dashboard").list(1).detail(1).action("modal");
+keyChain("dashboard").lists();
+keyChain("dashboard").list(1);
+keyChain("dashboard").list(1).detail(1);
+keyChain("dashboard").list(1).detail(1).action("modal");
 
 // dashboard details
-queryChain("dashboard").details();
-queryChain("dashboard").detail(1);
-queryChain("dashboard").detail(1).action("modal");
-queryChain("dashboard").detail(1).action("modal").params({ action: true });
+keyChain("dashboard").details();
+keyChain("dashboard").detail(1);
+keyChain("dashboard").detail(1).action("modal");
+keyChain("dashboard").detail(1).action("modal").params({ action: true });
 
 // dashboard with only params
 // invalidation only by .all()
-queryChain("dashboard").params({ action: true });
+keyChain("dashboard").params({ action: true });
+```
+
+`createQueryKeyFactory` is also useful when you have to manage keys globally and enforce type safety.
+
+```typescript
+import { createQueryKeyFactory } from "@kkoms/query-key-chain";
+
+// now chain behaves the same as `createQueryKey` with the base key types 'dashboard', 'user', and 'account'
+// useful when you have to manage keys globally and enforce type safety
+export const chain = createQueryKeyFactory("dashboard", "user", "account");
+
+// only 'dashboard', 'user', and 'account' are allowed
+chain("dashboard").lists();
+chain("account").details();
+chain("user").list(1).detail(1);
+
+// @ts-expect-error it have type error
+chain("something").list();
 ```
 
 ## API
 
 If you are already familiar with React Query's query key invalidation, you may not need to read this section.
+
+### _createQueryKeyFactory(key: TBase[])_
+
+Initializes a query key factory with the given `base key` strings.
+It returns a function that allows access to the predefined keys, ensuring type safety.
+
+```typescript
+// creates a key store with keys "1", "2", "3", and "4"
+export const chain = createQueryKeyFactory("1", "2", "3", "4");
+
+// or you can use like this
+const KEYS = ["1", "2", "3", "4"] as const;
+export const chain = createQueryKeyFactory(...KEYS);
+```
 
 ### _createQueryKey(key: string)_
 
@@ -178,14 +212,13 @@ Initializes a query key chain with the given `base key` string.
 It creates an array with a proxy wrapper that provides methods to handle the following APIs.
 
 ```typescript
-// index.ts
 // ['test']
-const base = createQueryFactory("test");
+const base = createQueryKey("test");
 ```
 
-### _queryChain(key: string)_
+### _keyChain(key: string)_
 
-It is same with `createQueryFactory`
+It is same with `createQueryKey`
 
 ### _.all()_
 
@@ -196,8 +229,7 @@ You can invalidate queries using just `base` too,
 but for semantic purpose it is recommended to use `.all()`.
 
 ```typescript
-// index.ts
-const base = createQueryFactory("test");
+const base = createQueryKey("test");
 
 // ['test', 'all']
 const queryKey = base.all();
@@ -212,8 +244,7 @@ It signifies a collection of lists.
 Invalidating with `.lists()` invalidates all cascading children, including those created with `list`.
 
 ```typescript
-// index.ts
-const base = createQueryFactory("test");
+const base = createQueryKey("test");
 
 // ['test', 'all', 'list']
 const queryKey = base.lists();
@@ -227,7 +258,7 @@ This is useful for querying a specific list identified by the key.
 When `.all()`, `.lists()` is invalidated, both the key itself and all cascading children are also invalidated.
 
 ```typescript
-const base = createQueryFactory("test");
+const base = createQueryKey("test");
 
 // ['test', 'all', 'list', 'list-test']
 const queryKey = base.list("list-test");
@@ -253,7 +284,7 @@ e.g., ['test', 'all', 'list', 'list-test', 'detail'].
 In the above example, invalidating `list("list-test")` or any preceding chain part cascades down, invalidating `detail` as well.
 
 ```typescript
-const base = createQueryFactory("test");
+const base = createQueryKey("test");
 
 // ['test', 'all', 'list', 'list-test', 'detail']
 const queryKey = base.list("list-test").details();
@@ -277,7 +308,7 @@ When `.all()`, `.details()` is invalidated, both the key itself and all cascadin
 Invalidating any part of the chain invalidates all cascading children.
 
 ```typescript
-const base = createQueryFactory("test");
+const base = createQueryKey("test");
 
 // ['test', 'all', 'list', 'list-test', 'detail', 'detail-test']
 const queryKey = base.list("list-test").detail("detail-test");
@@ -296,7 +327,7 @@ It is used to represent a collection of actions.
 Invalidating with `.actions()` invalidates all cascading children, including those created with `action`.
 
 ```typescript
-const base = createQueryFactory("test");
+const base = createQueryKey("test");
 
 // ['test', 'all', 'list', 'list-test', 'detail', 'detail-test', 'action']
 const queryKey = base.list("list-test").detail("detail-test").actions();
@@ -318,7 +349,7 @@ When `.all()`, `.actions()` is invalidated, both the key itself and all cascadin
 `base.list("list-test").detail("detail-test").action("action-test")`: Creates a more specific query key under list, detail.
 
 ```typescript
-const base = createQueryFactory("test");
+const base = createQueryKey("test");
 
 // ['test', 'all', 'list', 'list-test', 'detail', 'detail-test', 'action', ''action-test']
 const queryKey = base
@@ -339,7 +370,7 @@ When the parent query key or any preceding part of the chain (such as `list`, `d
 As this is the final element of the array, no further cascading occurs.
 
 ```typescript
-const base = createQueryFactory("test");
+const base = createQueryKey("test");
 
 // ['test', 'all', 'list', 'list-test', 'detail', 'detail-test', 'action', ''action-test', { test: 3 }]
 const queryKey = base
