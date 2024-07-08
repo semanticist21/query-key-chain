@@ -29,7 +29,7 @@ const handlerLevelBase = {
     if (prop === "lists") {
       return function () {
         return new Proxy(
-          [...receiver.all(), "list"],
+          [...receiver.all(), "#list"],
           handlerLevelList
         ) as Readonly<ListKeys<TBase, never>>;
       };
@@ -46,7 +46,7 @@ const handlerLevelBase = {
 
     if (prop === "details") {
       return function () {
-        return new Proxy([...receiver.all(), "detail"], handlerLevelDetail);
+        return new Proxy([...receiver.all(), "#detail"], handlerLevelDetail);
       };
     }
 
@@ -58,7 +58,7 @@ const handlerLevelBase = {
 
     if (prop === "actions") {
       return function () {
-        return new Proxy([...receiver.all(), "action"], handlerLevelAction);
+        return new Proxy([...receiver.all(), "#action"], handlerLevelAction);
       };
     }
 
@@ -97,7 +97,7 @@ const handlerLevelList = {
   ) {
     if (prop === "details") {
       return function () {
-        return new Proxy([...receiver, "detail"], handlerLevelDetail);
+        return new Proxy([...receiver, "#detail"], handlerLevelDetail);
       };
     }
 
@@ -109,7 +109,7 @@ const handlerLevelList = {
 
     if (prop === "actions") {
       return function () {
-        return new Proxy([...receiver, "action"], handlerLevelAction);
+        return new Proxy([...receiver, "#action"], handlerLevelAction);
       };
     }
 
@@ -148,7 +148,7 @@ const handlerLevelDetail = {
   ) {
     if (prop === "actions") {
       return function () {
-        return new Proxy([...receiver, "action"], handlerLevelAction);
+        return new Proxy([...receiver, "#action"], handlerLevelAction);
       };
     }
 
