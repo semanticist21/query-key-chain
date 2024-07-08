@@ -206,9 +206,43 @@ const handlerLevelAction = {
   },
 };
 
-const createQueryKey = <TBase extends string>(baseQuery: TBase) =>
-  new Proxy([baseQuery], handlerLevelBase) as Readonly<BaseQuery<TBase>>;
+/**
+ * @param baseQuery base key string.
+ * @returns [baseQuery]
+ * @example
+ * ```ts
+ * const query = createQueryKeyFactory("dashboard")
+ * ```
+ */
+export const createQueryKeyFactory = <TBaseArray extends Array<string>>(
+  ...keys: TBaseArray
+) => {
+  return (baseQuery: (typeof keys)[number]) =>
+    new Proxy([baseQuery], handlerLevelBase) as Readonly<
+      BaseQuery<(typeof keys)[number]>
+    >;
+};
 
+/**
+ * @param baseKey base key string.
+ * @returns [baseQuery]
+ * @example
+ * ```ts
+ * const query = createQueryKey("dashboard")
+ * ```
+ */
+export const createQueryKey = <TBase extends string>(baseKey: TBase) =>
+  new Proxy([baseKey], handlerLevelBase) as Readonly<BaseQuery<TBase>>;
+
+/**
+ * @description same with `createQueryKey` with shorter name.
+ * @param baseKey base key string.
+ * @returns [baseKey]
+ * @example
+ * ```ts
+ * const query = keyChain("dashboard")
+ * ```
+ */
 export const keyChain = createQueryKey;
 
 /**
