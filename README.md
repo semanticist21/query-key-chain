@@ -186,7 +186,7 @@ chain("dashboard").lists();
 chain("account").details();
 chain("user").list(1).detail(1);
 
-// @ts-expect-error it have type error
+// @ts-expect-error it has type error
 chain("something").list();
 ```
 
