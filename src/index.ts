@@ -1,10 +1,10 @@
 import {
-  BaseQuery,
-  QueryActionArray,
-  QueryAllArray,
-  QueryDetailArray,
-  QueryListArray,
-  QueryParamsArray,
+  BaseKey,
+  ActionKeys,
+  AllKeys,
+  DetailKeys,
+  ListKeys,
+  ParamsKeys,
 } from "./type/array";
 import { TKey } from "./type/key";
 
@@ -18,11 +18,11 @@ const handlerLevelBase = {
   get<TBase extends string, TListKeyValue extends TKey>(
     target: Readonly<Array<unknown>>,
     prop: unknown,
-    receiver: Readonly<BaseQuery<TBase>>
+    receiver: Readonly<BaseKey<TBase>>
   ) {
     if (prop === "all") {
       return function () {
-        return [...receiver, "all"] as Readonly<QueryAllArray<TBase>>;
+        return [...receiver, "all"] as Readonly<AllKeys<TBase>>;
       };
     }
 
@@ -31,7 +31,7 @@ const handlerLevelBase = {
         return new Proxy(
           [...receiver.all(), "list"],
           handlerLevelList
-        ) as Readonly<QueryListArray<TBase, never>>;
+        ) as Readonly<ListKeys<TBase, never>>;
       };
     }
 
@@ -40,7 +40,7 @@ const handlerLevelBase = {
         return new Proxy(
           [...receiver.lists(), key],
           handlerLevelList
-        ) as Readonly<QueryListArray<TBase, TListKeyValue>>;
+        ) as Readonly<ListKeys<TBase, TListKeyValue>>;
       };
     }
 
@@ -71,7 +71,7 @@ const handlerLevelBase = {
     if (prop === "params") {
       return function <TParams = unknown>(params: TParams) {
         return [...receiver, params] as Readonly<
-          QueryParamsArray<TBase, never, never, never, TParams>
+          ParamsKeys<TBase, never, never, never, TParams>
         >;
       };
     }
@@ -93,7 +93,7 @@ const handlerLevelList = {
   get<TBase extends string, TListKeyValue extends TKey>(
     target: Readonly<Array<unknown>>,
     prop: unknown,
-    receiver: Readonly<QueryListArray<TBase, TListKeyValue>>
+    receiver: Readonly<ListKeys<TBase, TListKeyValue>>
   ) {
     if (prop === "details") {
       return function () {
@@ -122,7 +122,7 @@ const handlerLevelList = {
     if (prop === "params") {
       return function <TParams = unknown>(params: TParams) {
         return [...receiver, params] as Readonly<
-          QueryParamsArray<TBase, TListKeyValue, never, never, TParams>
+          ParamsKeys<TBase, TListKeyValue, never, never, TParams>
         >;
       };
     }
@@ -144,7 +144,7 @@ const handlerLevelDetail = {
   get<TBase extends string, TKeyValue extends TKey>(
     target: Readonly<Array<unknown>>,
     prop: unknown,
-    receiver: Readonly<QueryDetailArray<TBase, TKeyValue, never>>
+    receiver: Readonly<DetailKeys<TBase, TKeyValue, never>>
   ) {
     if (prop === "actions") {
       return function () {
@@ -161,7 +161,7 @@ const handlerLevelDetail = {
     if (prop === "params") {
       return function <TParams = unknown>(params: TParams) {
         return [...receiver, params] as Readonly<
-          QueryParamsArray<TBase, TKeyValue, never, never, TParams>
+          ParamsKeys<TBase, TKeyValue, never, never, TParams>
         >;
       };
     }
@@ -183,12 +183,12 @@ const handlerLevelAction = {
   get<TBase extends string, TKeyValue extends TKey>(
     target: Readonly<Array<unknown>>,
     prop: unknown,
-    receiver: Readonly<QueryActionArray<TBase, TKeyValue, never, never>>
+    receiver: Readonly<ActionKeys<TBase, TKeyValue, never, never>>
   ) {
     if (prop === "params") {
       return function <TParams = unknown>(params: TParams) {
         return [...receiver, params] as Readonly<
-          QueryParamsArray<TBase, TKeyValue, never, never, TParams>
+          ParamsKeys<TBase, TKeyValue, never, never, TParams>
         >;
       };
     }
@@ -219,7 +219,7 @@ export const createQueryKeyFactory = <TBaseArray extends Array<string>>(
 ) => {
   return (baseQuery: (typeof keys)[number]) =>
     new Proxy([baseQuery], handlerLevelBase) as Readonly<
-      BaseQuery<(typeof keys)[number]>
+      BaseKey<(typeof keys)[number]>
     >;
 };
 
@@ -232,7 +232,7 @@ export const createQueryKeyFactory = <TBaseArray extends Array<string>>(
  * ```
  */
 export const createQueryKey = <TBase extends string>(baseKey: TBase) =>
-  new Proxy([baseKey], handlerLevelBase) as Readonly<BaseQuery<TBase>>;
+  new Proxy([baseKey], handlerLevelBase) as Readonly<BaseKey<TBase>>;
 
 /**
  * @description same with `createQueryKey` with shorter name.
@@ -249,7 +249,7 @@ export const keyChain = createQueryKey;
  * @deprecated use `createQueryKey` instead
  */
 export const createQueryFactory = <TBase extends string>(baseQuery: TBase) =>
-  new Proxy([baseQuery], handlerLevelBase) as Readonly<BaseQuery<TBase>>;
+  new Proxy([baseQuery], handlerLevelBase) as Readonly<BaseKey<TBase>>;
 
 /**
  * @deprecated use `keyChain` instead

@@ -1,73 +1,69 @@
 import { TKey } from "./key";
 
-export interface BaseQuery<TBase extends string> extends Array<TBase> {
-  all: () => Readonly<QueryAllArray<TBase>>;
+export interface BaseKey<TBase extends string> extends Array<TBase> {
+  all: () => Readonly<AllKeys<TBase>>;
 
-  lists: () => Readonly<QueryListArray<TBase>>;
+  lists: () => Readonly<ListKeys<TBase>>;
   list: <TListKeyValue extends TKey>(
     key: TListKeyValue
-  ) => Readonly<QueryListArray<TBase, TListKeyValue>>;
+  ) => Readonly<ListKeys<TBase, TListKeyValue>>;
 
-  details: () => Readonly<QueryDetailArray<TBase, never, never>>;
+  details: () => Readonly<DetailKeys<TBase, never, never>>;
   detail: <TDetailKeyValue extends TKey>(
     key: TDetailKeyValue
-  ) => Readonly<QueryDetailArray<TBase, never, TDetailKeyValue>>;
+  ) => Readonly<DetailKeys<TBase, never, TDetailKeyValue>>;
 
-  actions: () => Readonly<QueryActionArray<TBase, never, never, never>>;
+  actions: () => Readonly<ActionKeys<TBase, never, never, never>>;
   action: <TActionKeyValue extends TKey>(
     action: TActionKeyValue
-  ) => Readonly<QueryActionArray<TBase, never, never, TActionKeyValue>>;
+  ) => Readonly<ActionKeys<TBase, never, never, TActionKeyValue>>;
 
   params: <TParams = unknown>(
     params: TParams
-  ) => Readonly<QueryParamsArray<TBase, never, never, never, TParams>>;
+  ) => Readonly<ParamsKeys<TBase, never, never, never, TParams>>;
 }
 
 // all
-export type QueryAllArray<TBase extends string> = Readonly<
-  Array<TBase | "all">
->;
+export type AllKeys<TBase extends string> = Readonly<Array<TBase | "all">>;
 
 // list
-export interface QueryListArray<
-  TBase extends string,
-  TList extends TKey = never
-> extends Array<TBase> {
+export interface ListKeys<TBase extends string, TList extends TKey = never>
+  extends Array<TBase> {
   all: () => Readonly<Array<TBase | "all">>;
 
-  details: () => Readonly<QueryDetailArray<TBase, TList, never>>;
+  details: () => Readonly<DetailKeys<TBase, TList, never>>;
   detail: <TDetailKeyValue extends TKey>(
     key: TDetailKeyValue
-  ) => Readonly<QueryDetailArray<TBase, TList, TDetailKeyValue>>;
+  ) => Readonly<DetailKeys<TBase, TList, TDetailKeyValue>>;
 
-  actions: () => Readonly<QueryActionArray<TBase, TList, never, never>>;
+  actions: () => Readonly<ActionKeys<TBase, TList, never, never>>;
   action: <TActionKeyValue extends TKey>(
     action: TActionKeyValue
-  ) => Readonly<QueryActionArray<TBase, TList, never, TActionKeyValue>>;
+  ) => Readonly<ActionKeys<TBase, TList, never, TActionKeyValue>>;
 
   params: <TParams = unknown>(
     params: TParams
-  ) => Readonly<QueryParamsArray<TBase, TList, never, never, TParams>>;
+  ) => Readonly<ParamsKeys<TBase, TList, never, never, TParams>>;
 }
 
 // detail
-export interface QueryDetailArray<
+export interface DetailKeys<
   TBase extends string,
   TList extends TKey = never,
   TDetail extends TKey = never
 > extends Array<TBase> {
-  actions: () => Readonly<QueryActionArray<TBase, TList, TDetail, never>>;
+  actions: () => Readonly<ActionKeys<TBase, TList, TDetail, never>>;
   action: <TActionKeyValue extends TKey>(
     action: TActionKeyValue
-  ) => Readonly<QueryActionArray<TBase, TList, TDetail, TActionKeyValue>>;
+  ) => Readonly<ActionKeys<TBase, TList, TDetail, TActionKeyValue>>;
 
   params: <TParams = unknown>(
     params: TParams
-  ) => Readonly<QueryParamsArray<TBase, TList, TDetail, never, TParams>>;
+  ) => Readonly<ParamsKeys<TBase, TList, TDetail, never, TParams>>;
 }
 
 // action
-export interface QueryActionArray<
+export interface ActionKeys<
   TBase extends string,
   TList extends TKey = never,
   TDetail extends TKey = never,
@@ -75,11 +71,11 @@ export interface QueryActionArray<
 > extends Array<TBase> {
   params: <TParams = unknown>(
     params: TParams
-  ) => Readonly<QueryParamsArray<TBase, TList, TDetail, TAction, TParams>>;
+  ) => Readonly<ParamsKeys<TBase, TList, TDetail, TAction, TParams>>;
 }
 
 // params
-export interface QueryParamsArray<
+export interface ParamsKeys<
   TBase extends string,
   TList extends TKey = never,
   TDetail extends TKey = never,
