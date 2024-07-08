@@ -13,4 +13,6 @@ All notable changes to this project will be documented in this file.
 `createQueryFactory` has been renamed to `createQueryKey`
 `queryChain` has been renamed to `keyChain`
 
+Type names ends with `QueryArray` has been changed to name with ending `Key` or `Keys`
+
 ### Fixed
