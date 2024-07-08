@@ -310,6 +310,20 @@ test("query key factory test", () => {
   keyStore("5");
 });
 
+test("query key factory spread test", () => {
+  const keys = ["1", "2", "3", "4"] as const;
+
+  const keyStore = createQueryKeyFactory(...keys);
+
+  keyStore("1");
+  keyStore("2");
+  keyStore("3");
+  keyStore("4");
+
+  // @ts-expect-error for test
+  keyStore("5");
+});
+
 // performance
 test("query key test - performance test", () => {
   const start = performance.now();
