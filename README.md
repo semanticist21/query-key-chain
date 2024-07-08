@@ -197,7 +197,7 @@ If you are already familiar with React Query's query key invalidation, you may n
 ### _createQueryKeyFactory(key: TBase[])_
 
 Initializes a query key factory with the given `base key` strings.
-It returns a function that allows access to the predefined keys, ensuring type safety.
+It returns a `createQueryKey` function for accessing these keys with type safety.
 
 ```typescript
 // creates a key store with keys "1", "2", "3", and "4"
