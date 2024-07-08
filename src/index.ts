@@ -207,11 +207,12 @@ const handlerLevelAction = {
 };
 
 /**
- * @param baseQuery base key string.
- * @returns [baseQuery]
+ * @param keys base keys.
+ * @returns `createQueryKey` function with typed base keys.
  * @example
  * ```ts
- * const query = createQueryKeyFactory("dashboard")
+ * const chain = createQueryKeyFactory("dashboard", "user", "account")
+ * chain("dashboard").all()
  * ```
  */
 export const createQueryKeyFactory = <TBaseArray extends Array<string>>(
