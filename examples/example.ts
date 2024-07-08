@@ -1,12 +1,12 @@
 // dashboard.queries.ts
 import { queryOptions, useQueryClient } from "@tanstack/react-query";
-import { createQueryFactory } from "@kkoms/query-key-chain";
+import { createQueryKey } from "@kkoms/query-key-chain";
 
 // key declaration
 // here, all keys are each unique arrays.
 // so, you can use them inside query key options directly.
 export const boardKeys = {
-  base: createQueryFactory("board"),
+  base: createQueryKey("board"),
 
   all: () => boardKeys.base.all(),
 
