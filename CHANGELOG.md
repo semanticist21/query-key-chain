@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.4.0] - 2023-06-01
+## [0.4.1] - 2024-07-08
 
 ### Added
 
@@ -15,4 +15,4 @@ All notable changes to this project will be documented in this file.
 
 Type names ends with `QueryArray` has been changed to name with ending `Key` or `Keys`
 
-### Fixed
+Updated README.md.
