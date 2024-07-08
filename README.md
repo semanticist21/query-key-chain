@@ -192,6 +192,8 @@ chain("something").list();
 
 ## API
 
+> This section focuses on query invalidation and explains the relationship between query keys in **Tanstack React Query**.
+
 If you are already familiar with React Query's query key invalidation, you may not need to read this section.
 
 ### _createQueryKeyFactory(key: TBase[])_
@@ -220,7 +222,7 @@ const base = createQueryKey("test");
 
 ### _keyChain(key: string)_
 
-It is same with `createQueryKey`
+Another name for `createQueryKey` used for brevity.
 
 ### _.all()_
 
