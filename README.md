@@ -376,19 +376,19 @@ As this is the final element of the array, no further cascading occurs.
 ```typescript
 const base = createQueryKey("test");
 
-// ['test', 'all', 'list', 'list-test', 'detail', 'detail-test', 'action', ''action-test', { test: 3 }]
+// ["test", "all", "#list", "list-test", "#detail", "detail-test", "#action", "action-test", { test: 3 }]
 const queryKey = base
   .list("list-test")
   .detail("detail-test")
   .action("action-test")
   .params({ test: 3 });
 
-// ['test', 'all', 'action', 'action-test', { test: 3 }]
+// ["test", "all", "#action", "action-test", { test: 3 }]
 const queryKey = base.action("action-test").params({ test: 3 });
 
 // or you can use just like this.
 // bound to only 'all' invalidation.
-// ['test', 'all', { test: 3 }]
+// ["test", "all", { test: 3 }]
 const queryKey2 = base.params({ test: 3 });
 ```
 
