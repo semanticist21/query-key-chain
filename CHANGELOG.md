@@ -26,3 +26,9 @@ Changed appended values from `list`, `detail`, `action` to `#list`, `#detail`, `
 - Fixed
 
 Fixed a bug in the typing for `createQueryKeyFactory`.
+
+## [0.5.1] - 2024-07-14
+
+- Changed
+
+Changed the type of Arrays to `ReadonlyArray` from `Readonly<Array<T>>`
