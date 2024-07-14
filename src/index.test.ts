@@ -324,6 +324,14 @@ test("query key factory spread test", () => {
   chain("5");
 });
 
+test("query key factory type test", () => {
+  const keys = ["1", "2", "3", "4"] as const;
+  const chain = createQueryKeyFactory(...keys);
+
+  // @ts-expect-error for test
+  chain("5").lists()[0] = "1";
+});
+
 // performance
 test("query key test - performance test", () => {
   const start = performance.now();
@@ -343,6 +351,6 @@ test("query key test - performance test", () => {
 
   const duration = end - start;
 
-  const threshold = 100; // 밀리초
-  expect(duration).toBeLessThan(threshold);
+  const limit = 100; // ms
+  expect(duration).toBeLessThan(limit);
 });

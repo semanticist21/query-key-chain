@@ -1,11 +1,4 @@
-import {
-  BaseKey,
-  ActionKeys,
-  AllKeys,
-  DetailKeys,
-  ListKeys,
-  ParamsKeys,
-} from "./type/array";
+import { BaseKey, ActionKeys, DetailKeys, ListKeys } from "./type/array";
 import { TKey } from "./type/key";
 
 // key list
@@ -16,13 +9,13 @@ const allKeywords = ["all", "lists", "list", ...listKeywords];
 
 const handlerLevelBase = {
   get<TBase extends string, TListKeyValue extends TKey>(
-    target: Readonly<Array<unknown>>,
+    target: ReadonlyArray<unknown>,
     prop: unknown,
-    receiver: Readonly<BaseKey<TBase>>
+    receiver: BaseKey<TBase>
   ) {
     if (prop === "all") {
       return function () {
-        return [...receiver, "all"] as Readonly<AllKeys<TBase>>;
+        return [...receiver, "all"];
       };
     }
 
@@ -31,7 +24,7 @@ const handlerLevelBase = {
         return new Proxy(
           [...receiver.all(), "#list"],
           handlerLevelList
-        ) as Readonly<ListKeys<TBase, never>>;
+        ) as ListKeys<TBase, never>;
       };
     }
 
@@ -40,7 +33,7 @@ const handlerLevelBase = {
         return new Proxy(
           [...receiver.lists(), key],
           handlerLevelList
-        ) as Readonly<ListKeys<TBase, TListKeyValue>>;
+        ) as ListKeys<TBase, TListKeyValue>;
       };
     }
 
@@ -70,15 +63,13 @@ const handlerLevelBase = {
 
     if (prop === "params") {
       return function <TParams = unknown>(params: TParams) {
-        return [...receiver, params] as Readonly<
-          ParamsKeys<TBase, never, never, never, TParams>
-        >;
+        return [...receiver, params];
       };
     }
 
     return Reflect.get(target, prop as PropertyKey, receiver);
   },
-  has(target: Readonly<Array<unknown>>, prop: unknown) {
+  has(target: ReadonlyArray<unknown>, prop: unknown) {
     if (typeof prop === "string") {
       if (allKeywords.includes(prop)) {
         return true;
@@ -91,9 +82,9 @@ const handlerLevelBase = {
 
 const handlerLevelList = {
   get<TBase extends string, TListKeyValue extends TKey>(
-    target: Readonly<Array<unknown>>,
+    target: ReadonlyArray<unknown>,
     prop: unknown,
-    receiver: Readonly<ListKeys<TBase, TListKeyValue>>
+    receiver: ListKeys<TBase, TListKeyValue>
   ) {
     if (prop === "details") {
       return function () {
@@ -121,15 +112,13 @@ const handlerLevelList = {
 
     if (prop === "params") {
       return function <TParams = unknown>(params: TParams) {
-        return [...receiver, params] as Readonly<
-          ParamsKeys<TBase, TListKeyValue, never, never, TParams>
-        >;
+        return [...receiver, params];
       };
     }
 
     return Reflect.get(target, prop as PropertyKey, receiver);
   },
-  has(target: Readonly<Array<unknown>>, prop: unknown) {
+  has(target: Readonly<ReadonlyArray<unknown>>, prop: unknown) {
     if (typeof prop === "string") {
       if (listKeywords.includes(prop)) {
         return true;
@@ -142,9 +131,9 @@ const handlerLevelList = {
 
 const handlerLevelDetail = {
   get<TBase extends string, TKeyValue extends TKey>(
-    target: Readonly<Array<unknown>>,
+    target: ReadonlyArray<unknown>,
     prop: unknown,
-    receiver: Readonly<DetailKeys<TBase, TKeyValue, never>>
+    receiver: DetailKeys<TBase, TKeyValue, never>
   ) {
     if (prop === "actions") {
       return function () {
@@ -160,15 +149,13 @@ const handlerLevelDetail = {
 
     if (prop === "params") {
       return function <TParams = unknown>(params: TParams) {
-        return [...receiver, params] as Readonly<
-          ParamsKeys<TBase, TKeyValue, never, never, TParams>
-        >;
+        return [...receiver, params];
       };
     }
 
     return Reflect.get(target, prop as PropertyKey, receiver);
   },
-  has(target: Readonly<Array<unknown>>, prop: unknown) {
+  has(target: ReadonlyArray<unknown>, prop: unknown) {
     if (typeof prop === "string") {
       if (detailKeywords.includes(prop)) {
         return true;
@@ -181,21 +168,19 @@ const handlerLevelDetail = {
 
 const handlerLevelAction = {
   get<TBase extends string, TKeyValue extends TKey>(
-    target: Readonly<Array<unknown>>,
+    target: ReadonlyArray<unknown>,
     prop: unknown,
-    receiver: Readonly<ActionKeys<TBase, TKeyValue, never, never>>
+    receiver: ActionKeys<TBase, TKeyValue, never, never>
   ) {
     if (prop === "params") {
       return function <TParams = unknown>(params: TParams) {
-        return [...receiver, params] as Readonly<
-          ParamsKeys<TBase, TKeyValue, never, never, TParams>
-        >;
+        return [...receiver, params];
       };
     }
 
     return Reflect.get(target, prop as PropertyKey, receiver);
   },
-  has(target: Readonly<Array<unknown>>, prop: unknown) {
+  has(target: ReadonlyArray<unknown>, prop: unknown) {
     if (typeof prop === "string") {
       if (actionKeywords.includes(prop)) {
         return true;
@@ -219,7 +204,7 @@ export const createQueryKeyFactory = <TBaseArray extends Array<string>>(
   ...keys: TBaseArray
 ) => {
   return <T extends (typeof keys)[number]>(baseQuery: T) =>
-    new Proxy([baseQuery], handlerLevelBase) as Readonly<BaseKey<T>>;
+    new Proxy([baseQuery], handlerLevelBase) as BaseKey<T>;
 };
 
 /**
@@ -231,7 +216,7 @@ export const createQueryKeyFactory = <TBaseArray extends Array<string>>(
  * ```
  */
 export const createQueryKey = <TBase extends string>(baseKey: TBase) =>
-  new Proxy([baseKey], handlerLevelBase) as Readonly<BaseKey<TBase>>;
+  new Proxy([baseKey], handlerLevelBase) as BaseKey<TBase>;
 
 /**
  * @description same with `createQueryKey` with shorter name.
@@ -243,14 +228,3 @@ export const createQueryKey = <TBase extends string>(baseKey: TBase) =>
  * ```
  */
 export const keyChain = createQueryKey;
-
-/**
- * @deprecated use `createQueryKey` instead
- */
-export const createQueryFactory = <TBase extends string>(baseQuery: TBase) =>
-  new Proxy([baseQuery], handlerLevelBase) as Readonly<BaseKey<TBase>>;
-
-/**
- * @deprecated use `keyChain` instead
- */
-export const queryChain = createQueryFactory;

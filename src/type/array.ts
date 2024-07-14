@@ -1,49 +1,49 @@
 import { TKey } from "./key";
 
-export interface BaseKey<TBase extends string> extends Array<TBase> {
-  all: () => Readonly<AllKeys<TBase>>;
+export interface BaseKey<TBase extends string> extends ReadonlyArray<TBase> {
+  all: () => AllKeys<TBase>;
 
-  lists: () => Readonly<ListKeys<TBase>>;
+  lists: () => ListKeys<TBase>;
   list: <TListKeyValue extends TKey>(
     key: TListKeyValue
-  ) => Readonly<ListKeys<TBase, TListKeyValue>>;
+  ) => ListKeys<TBase, TListKeyValue>;
 
-  details: () => Readonly<DetailKeys<TBase, never, never>>;
+  details: () => DetailKeys<TBase, never, never>;
   detail: <TDetailKeyValue extends TKey>(
     key: TDetailKeyValue
-  ) => Readonly<DetailKeys<TBase, never, TDetailKeyValue>>;
+  ) => DetailKeys<TBase, never, TDetailKeyValue>;
 
-  actions: () => Readonly<ActionKeys<TBase, never, never, never>>;
+  actions: () => ActionKeys<TBase, never, never, never>;
   action: <TActionKeyValue extends TKey>(
     action: TActionKeyValue
-  ) => Readonly<ActionKeys<TBase, never, never, TActionKeyValue>>;
+  ) => ActionKeys<TBase, never, never, TActionKeyValue>;
 
   params: <TParams = unknown>(
     params: TParams
-  ) => Readonly<ParamsKeys<TBase, never, never, never, TParams>>;
+  ) => ParamsKeys<TBase, never, never, never, TParams>;
 }
 
 // all
-export type AllKeys<TBase extends string> = Readonly<Array<TBase | "all">>;
+export type AllKeys<TBase extends string> = ReadonlyArray<TBase | "all">;
 
 // list
 export interface ListKeys<TBase extends string, TList extends TKey = never>
-  extends Array<TBase> {
-  all: () => Readonly<Array<TBase | "all">>;
+  extends ReadonlyArray<TBase> {
+  all: () => AllKeys<TBase>;
 
-  details: () => Readonly<DetailKeys<TBase, TList, never>>;
+  details: () => DetailKeys<TBase, TList, never>;
   detail: <TDetailKeyValue extends TKey>(
     key: TDetailKeyValue
-  ) => Readonly<DetailKeys<TBase, TList, TDetailKeyValue>>;
+  ) => DetailKeys<TBase, TList, TDetailKeyValue>;
 
-  actions: () => Readonly<ActionKeys<TBase, TList, never, never>>;
+  actions: () => ActionKeys<TBase, TList, never, never>;
   action: <TActionKeyValue extends TKey>(
     action: TActionKeyValue
-  ) => Readonly<ActionKeys<TBase, TList, never, TActionKeyValue>>;
+  ) => ActionKeys<TBase, TList, never, TActionKeyValue>;
 
   params: <TParams = unknown>(
     params: TParams
-  ) => Readonly<ParamsKeys<TBase, TList, never, never, TParams>>;
+  ) => ParamsKeys<TBase, TList, never, never, TParams>;
 }
 
 // detail
@@ -51,15 +51,15 @@ export interface DetailKeys<
   TBase extends string,
   TList extends TKey = never,
   TDetail extends TKey = never
-> extends Array<TBase> {
-  actions: () => Readonly<ActionKeys<TBase, TList, TDetail, never>>;
+> extends ReadonlyArray<TBase> {
+  actions: () => ActionKeys<TBase, TList, TDetail, never>;
   action: <TActionKeyValue extends TKey>(
     action: TActionKeyValue
-  ) => Readonly<ActionKeys<TBase, TList, TDetail, TActionKeyValue>>;
+  ) => ActionKeys<TBase, TList, TDetail, TActionKeyValue>;
 
   params: <TParams = unknown>(
     params: TParams
-  ) => Readonly<ParamsKeys<TBase, TList, TDetail, never, TParams>>;
+  ) => ParamsKeys<TBase, TList, TDetail, never, TParams>;
 }
 
 // action
@@ -68,10 +68,10 @@ export interface ActionKeys<
   TList extends TKey = never,
   TDetail extends TKey = never,
   TAction extends TKey = never
-> extends Array<TBase> {
+> extends ReadonlyArray<TBase> {
   params: <TParams = unknown>(
     params: TParams
-  ) => Readonly<ParamsKeys<TBase, TList, TDetail, TAction, TParams>>;
+  ) => ParamsKeys<TBase, TList, TDetail, TAction, TParams>;
 }
 
 // params
@@ -81,4 +81,4 @@ export interface ParamsKeys<
   TDetail extends TKey = never,
   TAction extends TKey = never,
   TParams = unknown
-> extends Array<TBase | TList | TDetail | TAction | TParams> {}
+> extends ReadonlyArray<TBase | TList | TDetail | TAction | TParams> {}
