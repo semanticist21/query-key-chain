@@ -86,7 +86,7 @@ const queryKey = base
   .list("list-test")
   .detail("detail-test")
   .action("action-test");
-// type Readonly<QueryActionArray<"test", "list-test", "detail-test", "action-test">>
+// type ActionKeys<"test", "list-test", "detail-test", "action-test">
 ```
 
 ## Example
