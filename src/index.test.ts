@@ -114,7 +114,7 @@ test("query key test - chain:detail > action > params", () => {
 
   const result = base
     .detail("detail-test")
-    .action("#action-test")
+    .action("action-test")
     .params({ test: 1 });
 
   expect(result).toEqual(match);
