@@ -1,6 +1,4 @@
 {
-    "cSpell.words": [
-        "querykey"
-    ],
-    "editor.formatOnSave": true
+  "cSpell.words": ["querykey", "tanstack"],
+  "editor.formatOnSave": true
 }
