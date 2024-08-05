@@ -57,7 +57,7 @@
     "react query tools"
   ],
   "author": "semanticist21",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@jest/globals": "^29.7.0",
     "@rollup/plugin-typescript": "^11.1.6",
