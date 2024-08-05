@@ -47,7 +47,8 @@ pnpm add @kkoms/query-key-chain
 
 `query-key-chain` provides an efficient method for managing query keys in **TanStack React Query** using a hierarchical and functional approach.
 
-Each chain produces an array, with methods appending their respective segments to it.
+Each chain produces an array, with methods appending their respective segments to it. The hierarchy is structured as `base` > `list` > `detail` > `action` > `params`.  
+Each step can be omitted, resulting in an independent chain.
 
 By leveraging the proxy API, `query-key-chain` attaches methods representing different query key levels, ensuring a clean, intuitive, and scalable API for complex query key management.
 
@@ -226,7 +227,7 @@ Another name for `createQueryKey` used for brevity.
 
 ### _.all()_
 
-The all method appends `'all'` to the base query key array.  
+The all method appends `'#all'` to the base query key array.  
 It is typically used to denote a global or to invalidate all related query keys.
 
 You can invalidate queries using just `base` too,  
@@ -241,7 +242,7 @@ const queryKey = base.all();
 
 ### _.lists()_
 
-The lists method appends `'all'` and `'#list'` to the array.
+The lists method appends `'#all'` and `'#list'` to the array.
 
 It signifies a collection of lists.
 
@@ -256,7 +257,7 @@ const queryKey = base.lists();
 
 ### _.list(key: TKey)_
 
-The list method appends `'all'`, `'#list'`, and a specific key to the array.  
+The list method appends `'#all'`, `'#list'`, and a specific key to the array.  
 This is useful for querying a specific list identified by the key.
 
 When `.all()`, `.lists()` is invalidated, both the key itself and all cascading children are also invalidated.
@@ -273,17 +274,17 @@ const queryKey = base.list("list-test");
 The details method appends `'#detail'` to the preceding array.  
 It is used to represent a collection of detailed items.
 
-`'all'` is always included as the next segment after the base key, regardless of whether preceding chains like `list` have been used or not.
+`'#all'` is always included as the next segment after the base key, regardless of whether preceding chains like `list` have been used or not.
 
 Invalidating with `.details()` invalidates all cascading children, including those created with `.detail(key: TKey)`.
 
 Examples of usage:
 
-`base.details()`: Creates a query key `['test', 'all', '#detail']`.  
+`base.details()`: Creates a query key `['test', '#all', '#detail']`.  
 Invalidating `.all()` or `.details()` affects this key directly.
 
 `base.list("list-test").details()`: Creates a specific query key under a list,
-e.g., ['test', 'all', '#list', 'list-test', '#detail'].
+e.g., ['test', '#all', '#list', 'list-test', '#detail'].
 
 In the above example, invalidating `list("list-test")` or any preceding chain part cascades down, invalidating `detail` as well.
 
@@ -302,11 +303,11 @@ const queryKey2 = base.details();
 The detail method appends `'#detail'` and a specific key to the preceding array.  
 This is useful for querying detailed information identified by the key.
 
-`'all'` is always included as the next segment after the base key, regardless of whether preceding chains like `list` have been used or not.
+`'#all'` is always included as the next segment after the base key, regardless of whether preceding chains like `list` have been used or not.
 
 When `.all()`, `.details()` is invalidated, both the key itself and all cascading children are also invalidated.
 
-`base.detail("detail-test")`: Creates a query key ['test', 'all', '#detail', 'detail-test'].  
+`base.detail("detail-test")`: Creates a query key ['test', '#all', '#detail', 'detail-test'].  
 `base.list("list-test").detail("detail-test")`: Creates a more specific query key under a list.
 
 Invalidating any part of the chain invalidates all cascading children.
@@ -326,7 +327,7 @@ const queryKey2 = base.detail("detail-test");
 The actions method appends `'#action'` to the preceding array.  
 It is used to represent a collection of actions.
 
-`'all'` is always included as the next segment after the base key, regardless of whether preceding chains like `list`, `detail` have been used or not.
+`'#all'` is always included as the next segment after the base key, regardless of whether preceding chains like `list`, `detail` have been used or not.
 
 Invalidating with `.actions()` invalidates all cascading children, including those created with `.action(key: TKey)`.
 
@@ -345,11 +346,11 @@ const queryKey2 = base.actions();
 The action method appends `'#action'` and a specific key to the preceding array.  
 This is useful for querying a specific action identified by the key.
 
-`'all'` is always included as the next segment after the base key, regardless of whether preceding chains like `list`, `detail` have been used or not.
+`'#all'` is always included as the next segment after the base key, regardless of whether preceding chains like `list`, `detail` have been used or not.
 
 When `.all()`, `.actions()` is invalidated, both the key itself and all cascading children are also invalidated.
 
-`base.action("action-test")`: Creates a query key ['test', 'all', '#action', 'action-test'].
+`base.action("action-test")`: Creates a query key ['test', '#all', '#action', 'action-test'].
 `base.list("list-test").detail("detail-test").action("action-test")`: Creates a more specific query key under list, detail.
 
 ```typescript
@@ -388,7 +389,7 @@ const queryKey = base.action("action-test").params({ test: 3 });
 
 // or you can use just like this.
 // bound to only 'all' invalidation.
-// ["test", "all", { test: 3 }]
+// ["test", "#all", { test: 3 }]
 const queryKey2 = base.params({ test: 3 });
 ```
 
