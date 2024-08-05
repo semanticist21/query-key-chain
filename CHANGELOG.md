@@ -32,3 +32,10 @@ Fixed a bug in the typing for `createQueryKeyFactory`.
 - Changed
 
 Changed the type of Arrays to `ReadonlyArray` from `Readonly<Array<T>>`
+
+## [0.5.2] - 2024-08-05
+
+- Changed
+
+Refactored the code.
+`.all()` returns `#all` instead of `all`.
