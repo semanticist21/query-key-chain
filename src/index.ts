@@ -1,11 +1,12 @@
 import { BaseKey, ActionKeys, DetailKeys, ListKeys } from "./type/array";
-import { KEY_ATTACH, TKey } from "./type/key";
-
-// key list
-const actionKeywords = ["params"];
-const detailKeywords = ["actions", "action", ...actionKeywords];
-const listKeywords = ["details", "detail", ...detailKeywords];
-const allKeywords = ["all", "lists", "list", ...listKeywords];
+import {
+  actionsObjectKeys,
+  allObjectKeys,
+  detailObjectKeys,
+  KEY_ATTACH,
+  listObjectKeys,
+  TKey,
+} from "./type/key";
 
 const handlerLevelBase = {
   get<TBase extends string, TListKeyValue extends TKey>(
@@ -69,7 +70,7 @@ const handlerLevelBase = {
   },
   has(target: ReadonlyArray<unknown>, prop: unknown) {
     if (typeof prop === "string") {
-      if (allKeywords.includes(prop)) {
+      if (allObjectKeys.includes(prop)) {
         return true;
       }
     }
@@ -122,7 +123,7 @@ const handlerLevelList = {
   },
   has(target: Readonly<ReadonlyArray<unknown>>, prop: unknown) {
     if (typeof prop === "string") {
-      if (listKeywords.includes(prop)) {
+      if (listObjectKeys.includes(prop)) {
         return true;
       }
     }
@@ -162,7 +163,7 @@ const handlerLevelDetail = {
   },
   has(target: ReadonlyArray<unknown>, prop: unknown) {
     if (typeof prop === "string") {
-      if (detailKeywords.includes(prop)) {
+      if (detailObjectKeys.includes(prop)) {
         return true;
       }
     }
@@ -187,7 +188,7 @@ const handlerLevelAction = {
   },
   has(target: ReadonlyArray<unknown>, prop: unknown) {
     if (typeof prop === "string") {
-      if (actionKeywords.includes(prop)) {
+      if (actionsObjectKeys.includes(prop)) {
         return true;
       }
     }
