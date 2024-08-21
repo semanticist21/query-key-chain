@@ -4,7 +4,7 @@ import { createQueryKey, createQueryKeyFactory, keyChain } from ".";
 // direct
 test("query key test - all", () => {
   const base = createQueryKey("test");
-  const match = ["test", "#all"];
+  const match = ["test", { level: "#all" }];
 
   const result = base.all();
 
@@ -13,7 +13,7 @@ test("query key test - all", () => {
 
 test("query key test - direct:lists", () => {
   const base = createQueryKey("test");
-  const match = ["test", "#all", "#list"];
+  const match = ["test", { level: "#all" }, { level: "#list" }];
 
   const result = base.lists();
 
@@ -22,7 +22,7 @@ test("query key test - direct:lists", () => {
 
 test("query key test - direct:list", () => {
   const base = createQueryKey("test");
-  const match = ["test", "#all", "#list", "list-test"];
+  const match = ["test", { level: "#all" }, { level: "#list" }, "list-test"];
 
   const result = base.list("list-test");
 
@@ -31,7 +31,7 @@ test("query key test - direct:list", () => {
 
 test("query key test - direct:details", () => {
   const base = createQueryKey("test");
-  const match = ["test", "#all", "#detail"];
+  const match = ["test", { level: "#all" }, { level: "#detail" }];
 
   const result = base.details();
 
@@ -40,7 +40,12 @@ test("query key test - direct:details", () => {
 
 test("query key test - direct:detail", () => {
   const base = createQueryKey("test");
-  const match = ["test", "#all", "#detail", "detail-test"];
+  const match = [
+    "test",
+    { level: "#all" },
+    { level: "#detail" },
+    "detail-test",
+  ];
 
   const result = base.detail("detail-test");
 
@@ -50,7 +55,13 @@ test("query key test - direct:detail", () => {
 // indirect
 test("query key test - chain:list > details", () => {
   const base = createQueryKey("test");
-  const match = ["test", "#all", "#list", "list-test", "#detail"];
+  const match = [
+    "test",
+    { level: "#all" },
+    { level: "#list" },
+    "list-test",
+    { level: "#detail" },
+  ];
 
   const result = base.list("list-test").details();
 
@@ -59,7 +70,13 @@ test("query key test - chain:list > details", () => {
 
 test("query key test - chain:list > actions", () => {
   const base = createQueryKey("test");
-  const match = ["test", "#all", "#list", "list-test", "#action"];
+  const match = [
+    "test",
+    { level: "#all" },
+    { level: "#list" },
+    "list-test",
+    { level: "#action" },
+  ];
 
   const result = base.list("list-test").actions();
 
@@ -68,15 +85,31 @@ test("query key test - chain:list > actions", () => {
 
 test("query key test - chain:list > actions > params", () => {
   const base = createQueryKey("test");
-  const match = ["test", "#all", "#list", "list-test", "#action", { test: 1 }];
+  const match = [
+    "test",
+    { level: "#all" },
+    { level: "#list" },
+    "list-test",
+    { level: "#action" },
+    { level: "#params" },
+    { test: 1 },
+  ];
 
   const result = base.list("list-test").actions().params({ test: 1 });
 
   expect(result).toEqual(match);
 });
+
 test("query key test - chain:list > params", () => {
   const base = createQueryKey("test");
-  const match = ["test", "#all", "#list", "list-test", { test: 1 }];
+  const match = [
+    "test",
+    { level: "#all" },
+    { level: "#list" },
+    "list-test",
+    { level: "#params" },
+    { test: 1 },
+  ];
 
   const result = base.list("list-test").params({ test: 1 });
 
@@ -85,7 +118,14 @@ test("query key test - chain:list > params", () => {
 
 test("query key test - chain:detail > params", () => {
   const base = createQueryKey("test");
-  const match = ["test", "#all", "#action", "action-test", { test: 1 }];
+  const match = [
+    "test",
+    { level: "#all" },
+    { level: "#action" },
+    "action-test",
+    { level: "#params" },
+    { test: 1 },
+  ];
 
   const result = base.action("action-test").params({ test: 1 });
 
@@ -93,7 +133,13 @@ test("query key test - chain:detail > params", () => {
 });
 test("query key test - chain:actions > params", () => {
   const base = createQueryKey("test");
-  const match = ["test", "#all", "#action", { test: 1 }];
+  const match = [
+    "test",
+    { level: "#all" },
+    { level: "#action" },
+    { level: "#params" },
+    { test: 1 },
+  ];
 
   const result = base.actions().params({ test: 1 });
 
@@ -104,11 +150,12 @@ test("query key test - chain:detail > action > params", () => {
   const base = createQueryKey("test");
   const match = [
     "test",
-    "#all",
-    "#detail",
+    { level: "#all" },
+    { level: "#detail" },
     "detail-test",
-    "#action",
+    { level: "#action" },
     "action-test",
+    { level: "#params" },
     { test: 1 },
   ];
 
@@ -122,7 +169,14 @@ test("query key test - chain:detail > action > params", () => {
 
 test("query key test - chain:action > params", () => {
   const base = createQueryKey("test");
-  const match = ["test", "#all", "#action", "action-test", { test: 1 }];
+  const match = [
+    "test",
+    { level: "#all" },
+    { level: "#action" },
+    "action-test",
+    { level: "#params" },
+    { test: 1 },
+  ];
 
   const action = base.action("action-test");
   const result = action.params({ test: 1 });
@@ -136,10 +190,10 @@ test("query key test - chain:list > detail", () => {
   const base = createQueryKey("test");
   const match = [
     "test",
-    "#all",
-    "#list",
+    { level: "#all" },
+    { level: "#list" },
     "list-test",
-    "#detail",
+    { level: "#detail" },
     "detail-test",
   ];
 
@@ -150,7 +204,13 @@ test("query key test - chain:list > detail", () => {
 
 test("query key test - chain:list > actions", () => {
   const base = createQueryKey("test");
-  const match = ["test", "#all", "#list", "list-test", "#action"];
+  const match = [
+    "test",
+    { level: "#all" },
+    { level: "#list" },
+    "list-test",
+    { level: "#action" },
+  ];
 
   const result = base.list("list-test").actions();
 
@@ -161,10 +221,10 @@ test("query key test - chain:list > action", () => {
   const base = createQueryKey("test");
   const match = [
     "test",
-    "#all",
-    "#list",
+    { level: "#all" },
+    { level: "#list" },
     "list-test",
-    "#action",
+    { level: "#action" },
     "action-test",
   ];
 
@@ -177,12 +237,12 @@ test("query key test - chain:list > detail > action", () => {
   const base = createQueryKey("test");
   const match = [
     "test",
-    "#all",
-    "#list",
+    { level: "#all" },
+    { level: "#list" },
     "list-test",
-    "#detail",
+    { level: "#detail" },
     "detail-test",
-    "#action",
+    { level: "#action" },
     "action-test",
   ];
 
@@ -198,13 +258,14 @@ test("query key test - chain:list > detail > action > params", () => {
   const base = createQueryKey("test");
   const match = [
     "test",
-    "#all",
-    "#list",
+    { level: "#all" },
+    { level: "#list" },
     "list-test",
-    "#detail",
+    { level: "#detail" },
     "detail-test",
-    "#action",
+    { level: "#action" },
     "action-test",
+    { level: "#params" },
     { test: 1 },
   ];
 
@@ -221,11 +282,12 @@ test("query key test - chain:list > action > params", () => {
   const base = createQueryKey("test");
   const match = [
     "test",
-    "#all",
-    "#list",
+    { level: "#all" },
+    { level: "#list" },
     "list-test",
-    "#action",
+    { level: "#action" },
     "action-test",
+    { level: "#params" },
     { test: 2, test2: 3 },
   ];
 
@@ -238,7 +300,14 @@ test("query key test - chain:list > action > params", () => {
 });
 
 test("query key type test - chain:list > params", () => {
-  const match = ["-3", "#all", "#list", -2, { test: 3 }];
+  const match = [
+    "-3",
+    { level: "#all" },
+    { level: "#list" },
+    -2,
+    { level: "#params" },
+    { test: 3 },
+  ];
   const result = keyChain("-3").list(-2).params({ test: 3 });
 
   expect(result).toEqual(match);
@@ -246,21 +315,35 @@ test("query key type test - chain:list > params", () => {
 
 // type
 test("query key type test - type:lists", () => {
-  const match = ["true", "#all", "#list"];
+  const match = ["true", { level: "#all" }, { level: "#list" }];
   const result = keyChain("true").lists();
 
   expect(result).toEqual(match);
 });
 
 test("query key type test - type:list", () => {
-  const match = ["1", "#all", "#list", true, "#action", "0"];
+  const match = [
+    "1",
+    { level: "#all" },
+    { level: "#list" },
+    true,
+    { level: "#action" },
+    "0",
+  ];
   const result = keyChain("1").list(true).action("0");
 
   expect(result).toEqual(match);
 });
 
 test("query key type test - type:action", () => {
-  const match = ["1", "#all", "#list", 3, "#action", true];
+  const match = [
+    "1",
+    { level: "#all" },
+    { level: "#list" },
+    3,
+    { level: "#action" },
+    true,
+  ];
   const result = keyChain("1").list(3).action(true);
 
   expect(result).toEqual(match);
@@ -269,13 +352,14 @@ test("query key type test - type:action", () => {
 test("query key type test - type:list>detail>action>params", () => {
   const match = [
     "-3",
-    "#all",
-    "#list",
+    { level: "#all" },
+    { level: "#list" },
     -2,
-    "#detail",
+    { level: "#detail" },
     -1,
-    "#action",
+    { level: "#action" },
     3,
+    { level: "#params" },
     { test: 3 },
   ];
   const result = keyChain("-3")
@@ -307,10 +391,10 @@ test("query key type test - type:list>detail>action>params", () => {
 
   const match = [
     "test",
-    "#all",
-    "#list",
+    { level: "#all" },
+    { level: "#list" },
     "list-test",
-    "#detail",
+    { level: "#detail" },
     "detail-test",
   ];
   const second = base.list("list-test").detail("detail-test");
@@ -374,4 +458,16 @@ test("query key test - performance test", () => {
 
   const limit = 100; // ms
   expect(duration).toBeLessThan(limit);
+});
+
+// duplicate test
+test("query key test - chain:list > detail", () => {
+  const base = createQueryKey("test");
+  const match = ["test", { level: "#all" }, { level: "#list" }, "#detail"];
+
+  const result = base.list("#detail");
+  const result2 = base.lists().details();
+
+  expect(result).toEqual(match);
+  expect(result).not.toEqual(result2);
 });

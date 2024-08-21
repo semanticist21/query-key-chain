@@ -61,7 +61,7 @@ const handlerLevelBase = {
 
       case "params":
         return <TParams = unknown>(params: TParams) => {
-          return [...receiver, params];
+          return [...receiver, KEY_ATTACH.params, params];
         };
 
       default:
@@ -114,7 +114,7 @@ const handlerLevelList = {
 
       case "params":
         return <TParams = unknown>(params: TParams) => {
-          return [...receiver, params];
+          return [...receiver, KEY_ATTACH.params, params];
         };
 
       default:
@@ -154,7 +154,7 @@ const handlerLevelDetail = {
 
       case "params":
         return <TParams = unknown>(params: TParams) => {
-          return [...receiver, params];
+          return [...receiver, KEY_ATTACH.params, params];
         };
 
       default:
@@ -180,7 +180,7 @@ const handlerLevelAction = {
   ) {
     if (prop === "params") {
       return function <TParams = unknown>(params: TParams) {
-        return [...receiver, params];
+        return [...receiver, KEY_ATTACH.params, params];
       };
     }
 

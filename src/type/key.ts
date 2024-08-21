@@ -1,10 +1,9 @@
-// TODO prevent key duplication by input
 export const KEY_ATTACH = {
-  all: "#all",
-  list: "#list",
-  detail: "#detail",
-  action: "#action",
-  params: "#params",
+  all: { level: "#all" },
+  list: { level: "#list" },
+  detail: { level: "#detail" },
+  action: { level: "#action" },
+  params: { level: "#params" },
 } as const;
 
 // key list
