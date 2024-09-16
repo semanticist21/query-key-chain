@@ -459,15 +459,3 @@ test("query key test - performance test", () => {
   const limit = 100; // ms
   expect(duration).toBeLessThan(limit);
 });
-
-// duplicate test
-test("query key test - chain:list > detail", () => {
-  const base = createQueryKey("test");
-  const match = ["test", { level: "#all" }, { level: "#list" }, "#detail"];
-
-  const result = base.list("#detail");
-  const result2 = base.lists().details();
-
-  expect(result).toEqual(match);
-  expect(result).not.toEqual(result2);
-});

@@ -1,19 +1,19 @@
-import { TKey } from "./key";
+import { KEY_ATTACH, TKey } from "./key";
 
 export interface BaseKey<TBase extends string> extends ReadonlyArray<TBase> {
-  all: () => AllKeys<TBase>;
+  all: () => [TBase, typeof KEY_ATTACH.all];
 
-  lists: () => ListKeys<TBase>;
+  lists: () => [TBase, typeof KEY_ATTACH.all, typeof KEY_ATTACH.list];
   list: <TListKeyValue extends TKey>(
     key: TListKeyValue
   ) => ListKeys<TBase, TListKeyValue>;
 
-  details: () => DetailKeys<TBase, never, never>;
+  details: () => [TBase, typeof KEY_ATTACH.all, typeof KEY_ATTACH.detail];
   detail: <TDetailKeyValue extends TKey>(
     key: TDetailKeyValue
   ) => DetailKeys<TBase, never, TDetailKeyValue>;
 
-  actions: () => ActionKeys<TBase, never, never, never>;
+  actions: () => [TBase, typeof KEY_ATTACH.all, typeof KEY_ATTACH.action];
   action: <TActionKeyValue extends TKey>(
     action: TActionKeyValue
   ) => ActionKeys<TBase, never, never, TActionKeyValue>;
@@ -23,14 +23,9 @@ export interface BaseKey<TBase extends string> extends ReadonlyArray<TBase> {
   ) => ParamsKeys<TBase, never, never, never, TParams>;
 }
 
-// all
-export type AllKeys<TBase extends string> = ReadonlyArray<TBase | "all">;
-
 // list
 export interface ListKeys<TBase extends string, TList extends TKey = never>
   extends ReadonlyArray<TBase> {
-  all: () => AllKeys<TBase>;
-
   details: () => DetailKeys<TBase, TList, never>;
   detail: <TDetailKeyValue extends TKey>(
     key: TDetailKeyValue

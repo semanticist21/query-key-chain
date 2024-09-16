@@ -22,10 +22,7 @@ const handlerLevelBase = {
 
       case "lists":
         return () => {
-          return new Proxy(
-            [...receiver.all(), KEY_ATTACH.list],
-            handlerLevelList
-          ) as ListKeys<TBase, never>;
+          return [...receiver.all(), KEY_ATTACH.list];
         };
 
       case "list":
@@ -35,10 +32,7 @@ const handlerLevelBase = {
 
       case "details":
         return () => {
-          return new Proxy(
-            [...receiver.all(), KEY_ATTACH.detail],
-            handlerLevelDetail
-          );
+          return [...receiver.all(), KEY_ATTACH.detail];
         };
 
       case "detail":
@@ -48,10 +42,7 @@ const handlerLevelBase = {
 
       case "actions":
         return () => {
-          return new Proxy(
-            [...receiver.all(), KEY_ATTACH.action],
-            handlerLevelAction
-          );
+          return [...receiver.all(), KEY_ATTACH.action];
         };
 
       case "action":
@@ -88,10 +79,7 @@ const handlerLevelList = {
     switch (prop) {
       case "details":
         return () => {
-          return new Proxy(
-            [...receiver, KEY_ATTACH.detail],
-            handlerLevelDetail
-          );
+          return [...receiver, KEY_ATTACH.detail];
         };
 
       case "detail":
@@ -101,10 +89,7 @@ const handlerLevelList = {
 
       case "actions":
         return () => {
-          return new Proxy(
-            [...receiver, KEY_ATTACH.action],
-            handlerLevelAction
-          );
+          return [...receiver, KEY_ATTACH.action];
         };
 
       case "action":
@@ -141,10 +126,7 @@ const handlerLevelDetail = {
     switch (prop) {
       case "actions":
         return () => {
-          return new Proxy(
-            [...receiver, KEY_ATTACH.action],
-            handlerLevelAction
-          );
+          return [...receiver, KEY_ATTACH.action];
         };
 
       case "action":
