@@ -62,7 +62,7 @@ Here's an example of how to use query-key-chain in a React project with React Qu
 import { queryOptions, useQueryClient } from "@tanstack/react-query";
 import { createQueryKey } from "@kkoms/query-key-chain";
 
-// key declaration
+// key declaration.
 // here, all keys are each unique arrays.
 // so, you can use them inside query key options directly.
 export const boardKeys = {
@@ -96,11 +96,11 @@ export const boardService = {
   ...
 };
 
-// invalidate queries
-// this will invalidate all queries inside boardKeys
+// invalidating queries.
+// this will invalidate all queries inside boardKeys.
 queryClient.invalidateQueries({queryKey:boardKeys.all()});
 
-// this will invalidate queries inside boardKeys
+// this will invalidate queries inside boardKeys.
 // "boardLists", "boardList", "boardDetails", "boardDetail".
 //
 // "modal", "doSome", "baseParams" key is not invalidated,
@@ -119,19 +119,19 @@ You can use `keyChain` for simplicity.
 ```typescript
 import { keyChain } from "@kkoms/query-key-chain";
 
-// dashboard lists
+// dashboard lists.
 keyChain("dashboard").lists();
 keyChain("dashboard").list(1);
 keyChain("dashboard").list(1).detail(1);
 keyChain("dashboard").list(1).detail(1).action("modal");
 
-// dashboard details
+// dashboard details.
 keyChain("dashboard").details();
 keyChain("dashboard").detail(1);
 keyChain("dashboard").detail(1).action("modal");
 keyChain("dashboard").detail(1).action("modal").params({ action: true });
 
-// dashboard with only params
+// dashboard with only params.
 // invalidation only by .all()
 keyChain("dashboard").params({ action: true });
 ```
@@ -141,16 +141,17 @@ keyChain("dashboard").params({ action: true });
 ```typescript
 import { createQueryKeyFactory } from "@kkoms/query-key-chain";
 
-// now chain behaves the same as `createQueryKey` with the base key types 'dashboard', 'user', and 'account'
-// useful when you have to manage keys globally and enforce type safety
-export const chain = createQueryKeyFactory("dashboard", "user", "account");
+// now chain behaves the same as `createQueryKey` with the base key types 'dashboard', 'user', and 'account'.
+// useful when you have to manage keys globally and enforce type safety.
+const keys = ["dashboard", "user", "account"] as const
+export const chain = createQueryKeyFactory(...keys);
 
-// only 'dashboard', 'user', and 'account' are allowed
+// only 'dashboard', 'user', and 'account' are allowed in typescript.
 chain("dashboard").lists();
 chain("account").details();
 chain("user").list(1).detail(1);
 
-// @ts-expect-error it has type error
+// @ts-expect-error it has a type error.
 chain("something").list();
 ```
 
