@@ -30,9 +30,9 @@ pnpm add @kkoms/query-key-chain
 
 ## Usage
 
-`query-key-chain` simplifies the management of query keys in **@tanStack/react-query** through a hierarchical, functional approach. It dynamically generates arrays representing query keys, structured in a clear hierarchy: `base` > `list` > `detail` > `action` > `params`. Each level can be independently combined or omitted, offering flexibility in creating query chains. It eases the burden of manually constructing query key each time.
+`query-key-chain` simplifies query key management in **@tanStack/react-query** by dynamically generating hierarchical arrays: `base` > `list` > `detail` > `action` > `params`. Each level can be combined or omitted for flexibility.
 
-Utilizing the proxy API, `query-key-chain` ensures an intuitive and scalable method for managing complex query keys, allowing you to effortlessly generate unique query keys as needed.
+Using the proxy API, it eases the burden of manually building query keys, providing an intuitive and scalable solution for creating unique keys effortlessly.
 
 ## Example
 
