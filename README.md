@@ -122,7 +122,7 @@ export const boardKeys = {
 } as const;
 
 // query options
-// 'params' is an concluding method, returning readonly array of values, making no further chaining is possible.
+// 'params' is a concluding method, returning readonly array of values, making no further chaining is possible.
 export const boardService = {
   getList: (boardId: number, params: ListParams) =>
     queryOptions({
