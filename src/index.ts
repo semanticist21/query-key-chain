@@ -1,178 +1,122 @@
-import { BaseKey, ActionKeys, DetailKeys, ListKeys } from "./type/array";
+import {AChain, Chain, DChain, LChain} from './type/array';
 import {
-  actionsObjectKeys,
-  allObjectKeys,
-  detailObjectKeys,
-  KEY_ATTACH,
-  listObjectKeys,
-  TKey,
-} from "./type/key";
+  ADDITIONS,
+  ActionParams,
+  AllParams,
+  DetailParams,
+  ListParams,
+  actionParams,
+  allParams,
+  detailParams,
+  listParams,
+} from './type/key';
 
-const handlerLevelBase = {
-  get<TBase extends string, TListKeyValue extends TKey>(
-    target: ReadonlyArray<unknown>,
-    prop: unknown,
-    receiver: BaseKey<TBase>
-  ) {
+const handleBase = {
+  get<TKey extends string>(target: unknown[], prop: unknown, receiver: Chain<TKey>) {
     switch (prop) {
-      case "all":
-        return () => {
-          return [...receiver, KEY_ATTACH.all];
-        };
+      case 'all':
+        return () => [...receiver, ...ADDITIONS.all];
 
-      case "lists":
-        return () => {
-          return [...receiver.all(), KEY_ATTACH.list];
-        };
+      case 'lists':
+        return () => [...receiver, ...ADDITIONS.list];
+      case 'details':
+        return () => [...receiver, ...ADDITIONS.detail];
+      case 'actions':
+        return () => [...receiver, ...ADDITIONS.action];
 
-      case "list":
-        return (key: TListKeyValue) => {
-          return new Proxy([...receiver.lists(), key], handlerLevelList);
-        };
+      case 'list':
+        return (key: unknown) => new Proxy([...receiver.lists(), key], handleList);
+      case 'detail':
+        return (key: unknown) => new Proxy([...receiver.details(), key], handleDetail);
+      case 'action':
+        return (key: unknown) => new Proxy([...receiver.actions(), key], handleAction);
 
-      case "details":
-        return () => {
-          return [...receiver.all(), KEY_ATTACH.detail];
-        };
-
-      case "detail":
-        return (key: TListKeyValue) => {
-          return new Proxy([...receiver.details(), key], handlerLevelDetail);
-        };
-
-      case "actions":
-        return () => {
-          return [...receiver.all(), KEY_ATTACH.action];
-        };
-
-      case "action":
-        return (action: TListKeyValue) => {
-          return new Proxy([...receiver.actions(), action], handlerLevelAction);
-        };
-
-      case "params":
-        return <TParams = unknown>(params: TParams) => {
-          return [...receiver, KEY_ATTACH.params, params];
-        };
+      case 'params':
+        return (params: unknown) => [...receiver, ADDITIONS.params, params];
 
       default:
         return Reflect.get(target, prop as PropertyKey, receiver);
     }
   },
-  has(target: ReadonlyArray<unknown>, prop: unknown) {
-    if (typeof prop === "string") {
-      if (allObjectKeys.includes(prop)) {
-        return true;
-      }
+
+  has(target: unknown[], prop: unknown) {
+    if (typeof prop === 'string' && allParams.includes(prop as AllParams)) {
+      return true;
     }
 
     return Reflect.has(target, prop as PropertyKey);
   },
 };
 
-const handlerLevelList = {
-  get<TBase extends string, TListKeyValue extends TKey>(
-    target: ReadonlyArray<unknown>,
-    prop: unknown,
-    receiver: ListKeys<TBase, TListKeyValue>
-  ) {
+const handleList = {
+  get<TKey extends string>(target: unknown[], prop: unknown, receiver: LChain<TKey>) {
     switch (prop) {
-      case "details":
-        return () => {
-          return [...receiver, KEY_ATTACH.detail];
-        };
+      case 'details':
+        return () => [...receiver, ...ADDITIONS.detail];
+      case 'actions':
+        return () => [...receiver, ...ADDITIONS.action];
 
-      case "detail":
-        return (key: TListKeyValue) => {
-          return new Proxy([...receiver.details(), key], handlerLevelDetail);
-        };
+      case 'detail':
+        return (key: unknown) => new Proxy([...receiver.details(), key], handleDetail);
+      case 'action':
+        return (key: unknown) => new Proxy([...receiver.actions(), key], handleAction);
 
-      case "actions":
-        return () => {
-          return [...receiver, KEY_ATTACH.action];
-        };
-
-      case "action":
-        return (action: TListKeyValue) => {
-          return new Proxy([...receiver.actions(), action], handlerLevelAction);
-        };
-
-      case "params":
-        return <TParams = unknown>(params: TParams) => {
-          return [...receiver, KEY_ATTACH.params, params];
-        };
+      case 'params':
+        return (params: unknown) => [...receiver, ADDITIONS.params, params];
 
       default:
         return Reflect.get(target, prop as PropertyKey, receiver);
     }
   },
-  has(target: Readonly<ReadonlyArray<unknown>>, prop: unknown) {
-    if (typeof prop === "string") {
-      if (listObjectKeys.includes(prop)) {
-        return true;
-      }
+
+  has(target: unknown[], prop: unknown) {
+    if (typeof prop === 'string' && listParams.includes(prop as ListParams)) {
+      return true;
     }
 
     return Reflect.has(target, prop as PropertyKey);
   },
 };
 
-const handlerLevelDetail = {
-  get<TBase extends string, TKeyValue extends TKey>(
-    target: ReadonlyArray<unknown>,
-    prop: unknown,
-    receiver: DetailKeys<TBase, TKeyValue, never>
-  ) {
+const handleDetail = {
+  get<TKey extends string>(target: unknown[], prop: unknown, receiver: DChain<TKey>) {
     switch (prop) {
-      case "actions":
-        return () => {
-          return [...receiver, KEY_ATTACH.action];
-        };
+      case 'actions':
+        return () => [...receiver, ADDITIONS.action];
 
-      case "action":
-        return (action: TKeyValue) => {
-          return new Proxy([...receiver.actions(), action], handlerLevelAction);
-        };
+      case 'action':
+        return (action: unknown) => new Proxy([...receiver.actions(), action], handleAction);
 
-      case "params":
-        return <TParams = unknown>(params: TParams) => {
-          return [...receiver, KEY_ATTACH.params, params];
-        };
+      case 'params':
+        return (params: unknown) => [...receiver, ADDITIONS.params, params];
 
       default:
         return Reflect.get(target, prop as PropertyKey, receiver);
     }
   },
-  has(target: ReadonlyArray<unknown>, prop: unknown) {
-    if (typeof prop === "string") {
-      if (detailObjectKeys.includes(prop)) {
-        return true;
-      }
+
+  has(target: unknown[], prop: unknown) {
+    if (typeof prop === 'string' && detailParams.includes(prop as DetailParams)) {
+      return true;
     }
 
     return Reflect.has(target, prop as PropertyKey);
   },
 };
 
-const handlerLevelAction = {
-  get<TBase extends string, TKeyValue extends TKey>(
-    target: ReadonlyArray<unknown>,
-    prop: unknown,
-    receiver: ActionKeys<TBase, TKeyValue, never, never>
-  ) {
-    if (prop === "params") {
-      return function <TParams = unknown>(params: TParams) {
-        return [...receiver, KEY_ATTACH.params, params];
-      };
+const handleAction = {
+  get<TKey extends string>(target: unknown[], prop: unknown, receiver: AChain<TKey>) {
+    switch (prop) {
+      case 'params':
+        return (params: unknown) => [...receiver, ADDITIONS.params, params];
     }
 
     return Reflect.get(target, prop as PropertyKey, receiver);
   },
-  has(target: ReadonlyArray<unknown>, prop: unknown) {
-    if (typeof prop === "string") {
-      if (actionsObjectKeys.includes(prop)) {
-        return true;
-      }
+
+  has(target: unknown[], prop: unknown) {
+    if (typeof prop === 'string' && actionParams.includes(prop as ActionParams)) {
+      return true;
     }
 
     return Reflect.has(target, prop as PropertyKey);
@@ -184,32 +128,31 @@ const handlerLevelAction = {
  * @returns `createQueryKey` function with typed base keys.
  * @example
  * ```ts
- * const chain = createQueryKeyFactory("dashboard", "user", "account")
+ * const keys = ["dashboard", "user", "account"] as const;
+ * const chain = createQueryKeyFactory(...keys)
  * chain("dashboard").all()
  * ```
  */
-export const createQueryKeyFactory = <TBaseArray extends Array<string>>(
-  ...keys: TBaseArray
-) => {
+export const createQueryKeyFactory = <TBaseArray extends Array<string>>(...keys: TBaseArray) => {
   return <T extends (typeof keys)[number]>(baseQuery: T) =>
-    new Proxy([baseQuery], handlerLevelBase) as BaseKey<T>;
+    new Proxy([baseQuery], handleBase) as unknown as Chain<T>;
 };
 
 /**
  * @param baseKey base key string.
- * @returns [baseQuery]
+ * @returns [baseKey] with chainable methods.
  * @example
  * ```ts
  * const query = createQueryKey("dashboard")
  * ```
  */
 export const createQueryKey = <TBase extends string>(baseKey: TBase) =>
-  new Proxy([baseKey], handlerLevelBase) as BaseKey<TBase>;
+  new Proxy([baseKey], handleBase) as unknown as Chain<TBase>;
 
 /**
  * @description same with `createQueryKey` with shorter name.
  * @param baseKey base key string.
- * @returns [baseKey]
+ * @returns [baseKey] with chainable methods.
  * @example
  * ```ts
  * const query = keyChain("dashboard")
