@@ -1,4 +1,5 @@
 // key level
+// with 10 length randomly generated string.
 export const ADDITIONS = {
   all: ['Cl-vDIC-ej', '_all'],
   list: ['Mdnu7ZWZJe', '_list'],
