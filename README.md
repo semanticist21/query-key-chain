@@ -10,6 +10,8 @@ A simple and functional query key management solution for React Query, using a c
   - [Note](#note)
   - [Usage](#usage)
   - [Example](#example)
+    - [Basic Usage](#basic-usage)
+    - [Advanced Usage](#advanced-usage)
     - [License](#license)
 
 ## Installation
@@ -36,7 +38,59 @@ Using the proxy API, it eases the burden of manually building query keys, provid
 
 ## Example
 
-Here's an example of how to use `@kkoms/query-key-chain` with `@tanstack/react-query`:
+### Basic Usage
+
+```typescript
+import { keyChain, createQueryKey, createQueryKeyFactory } from '@kkoms/query-key-chain';
+
+// there are 3 ways to create a key chain.
+// creating a key chain - 1.
+const chain = createQueryKey('user');
+
+// creating a key chain - 2.
+const chain = keyChain('user');
+
+// creating a key chain - 3.
+const keys = ['user', 'post', 'comment'] as const;
+const factory = createQueryKeyFactory(...keys);
+
+const chain = factory('user');
+
+// @ts-expect-error only 'user', 'post', 'comment' are allowed.
+chain('invalid_key').list();
+
+
+// generating keys.
+chain.list('input1').detail('input2').action('input3').params('input4');
+
+// you can manage keys by grouping.
+chain.all();
+chain.lists();
+chain.details();
+chain.actions();
+
+// an example of hierarchical key structure.
+// from top to bottom.
+chain.lists();
+chain.list('input1');
+
+chain.list('input1').details();
+chain.list('input1').detail('input2');
+
+chain.list('input1').detail('input2').actions();
+chain.list('input1').detail('input2').action('input3');
+
+chain.list('input1').detail('input2').action('input3').params('input4');
+
+// you can make an independent key chain by omitting some part of the key chain in the middle.
+chain.details();
+chain.detail('input2').action('input3');
+
+```
+
+### Advanced Usage
+
+Here's an example of how to use `@kkoms/query-key-chain` with `@tanstack/react-query` in an actual project.
 
 ```typescript
 // example/dashboard.queries.ts
@@ -108,37 +162,6 @@ queryClient.invalidateQueries({queryKey:boardKeys.lists});
 // invalidating all filter, download cached data.
 queryClient.invalidateQueries({queryKey:chain.actions()});
 
-
-```
-
-You can use `keyChain` for simplicity.
-
-```typescript
-import {keyChain} from '@kkoms/query-key-chain';
-
-// dashboard lists.
-keyChain('dashboard').lists();
-...
-
-```
-
-`createQueryKeyFactory` is also useful when you have to manage keys globally and enforce type safety.
-
-```typescript
-import {createQueryKeyFactory} from '@kkoms/query-key-chain';
-
-// `createQueryKey` with the base key typed 'dashboard', 'user', and 'account'.
-// useful when you have to manage keys globally and enforce type safety.
-const keys = ['dashboard', 'user', 'account'] as const;
-export const chain = createQueryKeyFactory(...keys);
-
-// only 'dashboard', 'user', and 'account' are allowed in typescript.
-chain('dashboard').lists();
-chain('account').details();
-chain('user').list(1).detail(1);
-
-// @ts-expect-error it has a type error.
-chain('invalid_key').list();
 ```
 
 ### License
