@@ -6,7 +6,7 @@
   "description": "A simple and functional query key management solution for Tanstack React Query, using a cascading array structure.",
   "scripts": {
     "build": "vite build",
-    "test": "vitest --typecheck",
+    "test": "vitest --run --typecheck",
     "publish-prod": "pnpm run test && pnpm run build && pnpm publish --access=public"
   },
   "exports": {
