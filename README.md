@@ -56,13 +56,11 @@ This example demonstrates how to create query keys with different levels using t
 Here's an example of how to use query-key-chain in a React project with React Query:
 
 ```typescript
-// dashboard.queries.ts
+// example/dashboard.queries.ts
 import { queryOptions, useQueryClient } from "@tanstack/react-query";
 import { createQueryKey } from "@kkoms/query-key-chain";
 
 // key declaration.
-// here, all keys are each unique arrays.
-// so, you can use them inside query key options directly.
 const chain = createQueryKey("board");
 
 export const boardKeys = {
@@ -87,7 +85,8 @@ export const boardKeys = {
 } as const;
 
 // query options
-// here, 'params' is an optional concluding method, returning readonly array of values.
+// here, 'params' is an concluding method, returning readonly array of values.
+// no further chaining is possible.
 export const boardService = {
   getList: (boardId: number, params: ListParams) =>
     queryOptions({
@@ -145,7 +144,7 @@ keyChain('dashboard').lists();
 ```typescript
 import {createQueryKeyFactory} from '@kkoms/query-key-chain';
 
-// now chain behaves the same as `createQueryKey` with the base key types 'dashboard', 'user', and 'account'.
+// `createQueryKey` with the base key typed 'dashboard', 'user', and 'account'.
 // useful when you have to manage keys globally and enforce type safety.
 const keys = ['dashboard', 'user', 'account'] as const;
 export const chain = createQueryKeyFactory(...keys);
