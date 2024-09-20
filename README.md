@@ -41,10 +41,10 @@ Here's a basic usage example:
 ```typescript
 import {createQueryKeyFactory} from '@kkoms/query-key-chain';
 
-// Create a query key factory
+// creating a query key factory
 const chain = createQueryKeyFactory('user');
 
-// Generate keys
+// generating keys
 const allUsersKey = chain.all();
 const userDetailKey = chain.detail(123);
 const userActionKey = chain.action('edit');
