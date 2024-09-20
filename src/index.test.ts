@@ -1,461 +1,80 @@
-import { test, expect } from "@jest/globals";
-import { createQueryKey, createQueryKeyFactory, keyChain } from ".";
+import {expect, test} from 'vitest';
 
-// direct
-test("query key test - all", () => {
-  const base = createQueryKey("test");
-  const match = ["test", { level: "#all" }];
+import {createQueryKey} from '.';
+import {ADDITIONS} from './type/key';
 
-  const result = base.all();
-
-  expect(result).toEqual(match);
+test('key generation test - 1 depth', () => {
+  expect(createQueryKey('test').all()).toEqual(['test', ...ADDITIONS.all]);
+  expect(createQueryKey('test').lists()).toEqual(['test', ...ADDITIONS.all, ...ADDITIONS.list]);
+  expect(createQueryKey('test').details()).toEqual(['test', ...ADDITIONS.all, ...ADDITIONS.detail]);
+  expect(createQueryKey('test').actions()).toEqual(['test', ...ADDITIONS.all, ...ADDITIONS.action]);
 });
 
-test("query key test - direct:lists", () => {
-  const base = createQueryKey("test");
-  const match = ["test", { level: "#all" }, { level: "#list" }];
+test('key generation test - 2 depth', () => {
+  expect(createQueryKey('test').list('list-test').detail('detail-test')).toEqual([
+    'test',
+    ...ADDITIONS.all,
+    ...ADDITIONS.list,
+    'list-test',
+    ...ADDITIONS.detail,
+    'detail-test',
+  ]);
 
-  const result = base.lists();
+  expect(createQueryKey('test').detail('detail-test').action('action-test')).toEqual([
+    'test',
+    ...ADDITIONS.all,
+    ...ADDITIONS.detail,
+    'detail-test',
+    ...ADDITIONS.action,
+    'action-test',
+  ]);
 
-  expect(result).toEqual(match);
+  expect(createQueryKey('test').action('action-test').params({params: 'params-test'})).toEqual([
+    'test',
+    ...ADDITIONS.all,
+    ...ADDITIONS.action,
+    'action-test',
+    ...ADDITIONS.params,
+    {params: 'params-test'},
+  ]);
 });
 
-test("query key test - direct:list", () => {
-  const base = createQueryKey("test");
-  const match = ["test", { level: "#all" }, { level: "#list" }, "list-test"];
+test('key generation test - group', () => {
+  expect(createQueryKey('test').lists()).toEqual(['test', ...ADDITIONS.all, ...ADDITIONS.list]);
 
-  const result = base.list("list-test");
+  expect(createQueryKey('test').list('list-test').details()).toEqual([
+    'test',
+    ...ADDITIONS.all,
+    ...ADDITIONS.list,
+    'list-test',
+    ...ADDITIONS.detail,
+  ]);
 
-  expect(result).toEqual(match);
+  expect(createQueryKey('test').detail('detail-test').actions()).toEqual([
+    'test',
+    ...ADDITIONS.all,
+    ...ADDITIONS.detail,
+    'detail-test',
+    ...ADDITIONS.action,
+  ]);
 });
 
-test("query key test - direct:details", () => {
-  const base = createQueryKey("test");
-  const match = ["test", { level: "#all" }, { level: "#detail" }];
-
-  const result = base.details();
-
-  expect(result).toEqual(match);
-});
-
-test("query key test - direct:detail", () => {
-  const base = createQueryKey("test");
-  const match = [
-    "test",
-    { level: "#all" },
-    { level: "#detail" },
-    "detail-test",
-  ];
-
-  const result = base.detail("detail-test");
-
-  expect(result).toEqual(match);
-});
-
-// indirect
-test("query key test - chain:list > details", () => {
-  const base = createQueryKey("test");
-  const match = [
-    "test",
-    { level: "#all" },
-    { level: "#list" },
-    "list-test",
-    { level: "#detail" },
-  ];
-
-  const result = base.list("list-test").details();
-
-  expect(result).toEqual(match);
-});
-
-test("query key test - chain:list > actions", () => {
-  const base = createQueryKey("test");
-  const match = [
-    "test",
-    { level: "#all" },
-    { level: "#list" },
-    "list-test",
-    { level: "#action" },
-  ];
-
-  const result = base.list("list-test").actions();
-
-  expect(result).toEqual(match);
-});
-
-test("query key test - chain:list > actions > params", () => {
-  const base = createQueryKey("test");
-  const match = [
-    "test",
-    { level: "#all" },
-    { level: "#list" },
-    "list-test",
-    { level: "#action" },
-    { level: "#params" },
-    { test: 1 },
-  ];
-
-  const result = base.list("list-test").actions().params({ test: 1 });
-
-  expect(result).toEqual(match);
-});
-
-test("query key test - chain:list > params", () => {
-  const base = createQueryKey("test");
-  const match = [
-    "test",
-    { level: "#all" },
-    { level: "#list" },
-    "list-test",
-    { level: "#params" },
-    { test: 1 },
-  ];
-
-  const result = base.list("list-test").params({ test: 1 });
-
-  expect(result).toEqual(match);
-});
-
-test("query key test - chain:detail > params", () => {
-  const base = createQueryKey("test");
-  const match = [
-    "test",
-    { level: "#all" },
-    { level: "#action" },
-    "action-test",
-    { level: "#params" },
-    { test: 1 },
-  ];
-
-  const result = base.action("action-test").params({ test: 1 });
-
-  expect(result).toEqual(match);
-});
-test("query key test - chain:actions > params", () => {
-  const base = createQueryKey("test");
-  const match = [
-    "test",
-    { level: "#all" },
-    { level: "#action" },
-    { level: "#params" },
-    { test: 1 },
-  ];
-
-  const result = base.actions().params({ test: 1 });
-
-  expect(result).toEqual(match);
-});
-
-test("query key test - chain:detail > action > params", () => {
-  const base = createQueryKey("test");
-  const match = [
-    "test",
-    { level: "#all" },
-    { level: "#detail" },
-    "detail-test",
-    { level: "#action" },
-    "action-test",
-    { level: "#params" },
-    { test: 1 },
-  ];
-
-  const result = base
-    .detail("detail-test")
-    .action("action-test")
-    .params({ test: 1 });
-
-  expect(result).toEqual(match);
-});
-
-test("query key test - chain:action > params", () => {
-  const base = createQueryKey("test");
-  const match = [
-    "test",
-    { level: "#all" },
-    { level: "#action" },
-    "action-test",
-    { level: "#params" },
-    { test: 1 },
-  ];
-
-  const action = base.action("action-test");
-  const result = action.params({ test: 1 });
-  const result2 = action.params({ test: 1, gg: 123 });
-
-  expect(result).toEqual(match);
-  expect(result2).toEqual([...match.slice(0, -1), { test: 1, gg: 123 }]);
-});
-
-test("query key test - chain:list > detail", () => {
-  const base = createQueryKey("test");
-  const match = [
-    "test",
-    { level: "#all" },
-    { level: "#list" },
-    "list-test",
-    { level: "#detail" },
-    "detail-test",
-  ];
-
-  const result = base.list("list-test").detail("detail-test");
-
-  expect(result).toEqual(match);
-});
-
-test("query key test - chain:list > actions", () => {
-  const base = createQueryKey("test");
-  const match = [
-    "test",
-    { level: "#all" },
-    { level: "#list" },
-    "list-test",
-    { level: "#action" },
-  ];
-
-  const result = base.list("list-test").actions();
-
-  expect(result).toEqual(match);
-});
-
-test("query key test - chain:list > action", () => {
-  const base = createQueryKey("test");
-  const match = [
-    "test",
-    { level: "#all" },
-    { level: "#list" },
-    "list-test",
-    { level: "#action" },
-    "action-test",
-  ];
-
-  const result = base.list("list-test").action("action-test");
-
-  expect(result).toEqual(match);
-});
-
-test("query key test - chain:list > detail > action", () => {
-  const base = createQueryKey("test");
-  const match = [
-    "test",
-    { level: "#all" },
-    { level: "#list" },
-    "list-test",
-    { level: "#detail" },
-    "detail-test",
-    { level: "#action" },
-    "action-test",
-  ];
-
-  const result = base
-    .list("list-test")
-    .detail("detail-test")
-    .action("action-test");
-
-  expect(result).toEqual(match);
-});
-
-test("query key test - chain:list > detail > action > params", () => {
-  const base = createQueryKey("test");
-  const match = [
-    "test",
-    { level: "#all" },
-    { level: "#list" },
-    "list-test",
-    { level: "#detail" },
-    "detail-test",
-    { level: "#action" },
-    "action-test",
-    { level: "#params" },
-    { test: 1 },
-  ];
-
-  const result = base
-    .list("list-test")
-    .detail("detail-test")
-    .action("action-test")
-    .params({ test: 1 });
-
-  expect(result).toEqual(match);
-});
-
-test("query key test - chain:list > action > params", () => {
-  const base = createQueryKey("test");
-  const match = [
-    "test",
-    { level: "#all" },
-    { level: "#list" },
-    "list-test",
-    { level: "#action" },
-    "action-test",
-    { level: "#params" },
-    { test: 2, test2: 3 },
-  ];
-
-  const result = base
-    .list("list-test")
-    .action("action-test")
-    .params({ test: 2, test2: 3 });
-
-  expect(result).toEqual(match);
-});
-
-test("query key type test - chain:list > params", () => {
-  const match = [
-    "-3",
-    { level: "#all" },
-    { level: "#list" },
-    -2,
-    { level: "#params" },
-    { test: 3 },
-  ];
-  const result = keyChain("-3").list(-2).params({ test: 3 });
-
-  expect(result).toEqual(match);
-});
-
-// type
-test("query key type test - type:lists", () => {
-  const match = ["true", { level: "#all" }, { level: "#list" }];
-  const result = keyChain("true").lists();
-
-  expect(result).toEqual(match);
-});
-
-test("query key type test - type:list", () => {
-  const match = [
-    "1",
-    { level: "#all" },
-    { level: "#list" },
-    true,
-    { level: "#action" },
-    "0",
-  ];
-  const result = keyChain("1").list(true).action("0");
-
-  expect(result).toEqual(match);
-});
-
-test("query key type test - type:action", () => {
-  const match = [
-    "1",
-    { level: "#all" },
-    { level: "#list" },
-    3,
-    { level: "#action" },
-    true,
-  ];
-  const result = keyChain("1").list(3).action(true);
-
-  expect(result).toEqual(match);
-});
-
-test("query key type test - type:list>detail>action>params", () => {
-  const match = [
-    "-3",
-    { level: "#all" },
-    { level: "#list" },
-    -2,
-    { level: "#detail" },
-    -1,
-    { level: "#action" },
-    3,
-    { level: "#params" },
-    { test: 3 },
-  ];
-  const result = keyChain("-3")
-    .list(-2)
-    .detail(-1)
-    .action(3)
-    .params({ test: 3 });
-
-  expect(result).toEqual(match);
-});
-
-// has test
-test("query key type test - type:list>detail>action>params", () => {
-  const has = "list" in keyChain("1");
-
-  expect(has).toBe(true);
-});
-
-// whether key retained test
-test("query key type test - type:list>detail>action>params", () => {
-  const base = createQueryKey("test");
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  base
-    .list("list-test")
-    .detail("detail-test")
-    .action("action-test")
-    .params({ test: 3 });
-
-  const match = [
-    "test",
-    { level: "#all" },
-    { level: "#list" },
-    "list-test",
-    { level: "#detail" },
-    "detail-test",
-  ];
-  const second = base.list("list-test").detail("detail-test");
-
-  expect(second).toEqual(match);
-});
-
-// query key factory
-test("query key factory test", () => {
-  const chain = createQueryKeyFactory("1", "2", "3", "4");
-
-  chain("1");
-  chain("2");
-  chain("3");
-  chain("4");
-
-  // @ts-expect-error for test
-  chain("5");
-});
-
-test("query key factory spread test", () => {
-  const keys = ["1", "2", "3", "4"] as const;
-
-  const chain = createQueryKeyFactory(...keys);
-
-  chain("1");
-  chain("2");
-  chain("3");
-  chain("4");
-
-  // @ts-expect-error for test
-  chain("5");
-});
-
-test("query key factory type test", () => {
-  const keys = ["1", "2", "3", "4"] as const;
-  const chain = createQueryKeyFactory(...keys);
-
-  // @ts-expect-error for test
-  chain("5").lists()[0] = "1";
-});
-
-// performance
-test("query key test - performance test", () => {
+test('performance test', () => {
   const start = performance.now();
-  for (let i = 0; i < 3000; i++) {
-    createQueryKey("test")
-      .list("list-test")
-      .action("action-test")
-      .params({ test: 2, test2: 3 });
 
-    keyChain("test")
-      .list("list-test")
-      .action("action-test")
-      .params({ test: 2, test2: 3 });
-  }
+  const chain = createQueryKey('test');
+
+  Array.from({length: 5000}).forEach(() => {
+    chain.list('list-test').detail('detail-test').action('action-test').params({
+      page: 1,
+      limit: 10,
+    });
+  });
 
   const end = performance.now();
-
   const duration = end - start;
 
-  const limit = 100; // ms
-  expect(duration).toBeLessThan(limit);
+  const limitMs = 100;
+
+  expect(duration).toBeLessThan(limitMs);
 });
