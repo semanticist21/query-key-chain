@@ -18,11 +18,11 @@ const handleBase = {
         return () => [...receiver, ...ADDITIONS.all];
 
       case 'lists':
-        return () => [...receiver, ...ADDITIONS.list];
+        return () => [...receiver.all(), ...ADDITIONS.list];
       case 'details':
-        return () => [...receiver, ...ADDITIONS.detail];
+        return () => [...receiver.all(), ...ADDITIONS.detail];
       case 'actions':
-        return () => [...receiver, ...ADDITIONS.action];
+        return () => [...receiver.all(), ...ADDITIONS.action];
 
       case 'list':
         return (key: unknown) => new Proxy([...receiver.lists(), key], handleList);
@@ -32,7 +32,7 @@ const handleBase = {
         return (key: unknown) => new Proxy([...receiver.actions(), key], handleAction);
 
       case 'params':
-        return (params: unknown) => [...receiver, ADDITIONS.params, params];
+        return (params: unknown) => [...receiver, ...ADDITIONS.params, params];
 
       default:
         return Reflect.get(target, prop as PropertyKey, receiver);
@@ -62,7 +62,7 @@ const handleList = {
         return (key: unknown) => new Proxy([...receiver.actions(), key], handleAction);
 
       case 'params':
-        return (params: unknown) => [...receiver, ADDITIONS.params, params];
+        return (params: unknown) => [...receiver, ...ADDITIONS.params, params];
 
       default:
         return Reflect.get(target, prop as PropertyKey, receiver);
@@ -82,13 +82,13 @@ const handleDetail = {
   get<TKey extends string>(target: unknown[], prop: unknown, receiver: DChain<TKey>) {
     switch (prop) {
       case 'actions':
-        return () => [...receiver, ADDITIONS.action];
+        return () => [...receiver, ...ADDITIONS.action];
 
       case 'action':
         return (action: unknown) => new Proxy([...receiver.actions(), action], handleAction);
 
       case 'params':
-        return (params: unknown) => [...receiver, ADDITIONS.params, params];
+        return (params: unknown) => [...receiver, ...ADDITIONS.params, params];
 
       default:
         return Reflect.get(target, prop as PropertyKey, receiver);
@@ -108,7 +108,7 @@ const handleAction = {
   get<TKey extends string>(target: unknown[], prop: unknown, receiver: AChain<TKey>) {
     switch (prop) {
       case 'params':
-        return (params: unknown) => [...receiver, ADDITIONS.params, params];
+        return (params: unknown) => [...receiver, ...ADDITIONS.params, params];
     }
 
     return Reflect.get(target, prop as PropertyKey, receiver);
