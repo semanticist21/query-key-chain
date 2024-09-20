@@ -39,6 +39,29 @@ test('key generation test - 2 depth', () => {
   ]);
 });
 
+test('hierarchy test', () => {
+  const ancestor = createQueryKey('test');
+  const child = ancestor.list('list-test').detail('detail-test').action('action-test').params({
+    page: 1,
+    limit: 10,
+  });
+
+  const lists = ancestor.lists();
+  const sliced = child.slice(0, 5);
+
+  expect(lists).toEqual(sliced);
+
+  const details = ancestor.list('list-test').details();
+  const slicedDetails = child.slice(0, 8);
+
+  expect(details).toEqual(slicedDetails);
+
+  const actions = ancestor.list('list-test').detail('detail-test').actions();
+  const slicedActions = child.slice(0, 11);
+
+  expect(actions).toEqual(slicedActions);
+});
+
 test('key generation test - group', () => {
   expect(createQueryKey('test').lists()).toEqual(['test', ...ADDITIONS.all, ...ADDITIONS.list]);
 
