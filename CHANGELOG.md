@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.0] - 2024-09-20
+
+- Changed
+  - `lists()`, `details()`, `actions()` now returns an array that is not chainable.
+  - key inputs other than primitive values are now allowed.
+  - a type annotation of chains only represents its base key.
+
 ## [0.6.2] - 2024-08-21
 
 - Changed
