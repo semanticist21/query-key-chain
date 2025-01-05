@@ -12,7 +12,7 @@ A simple and functional query key management solution for React Query, using a c
   - [Example](#example)
     - [Basic Usage](#basic-usage)
     - [With `@tanstack/react-query`](#with-tanstackreact-query)
-    - [License](#license)
+  - [License](#license)
 
 ## Installation
 
@@ -106,6 +106,6 @@ useMutation({
 });
 ```
 
-### License
+## License
 
 This project is licensed under the MIT License.
