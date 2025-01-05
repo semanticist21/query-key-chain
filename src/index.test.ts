@@ -87,12 +87,12 @@ test('performance test', () => {
 
   const chain = createQueryKey('test');
 
-  Array.from({length: 5000}).forEach(() => {
+  for (const _i of Array.from({length: 5000})) {
     chain.list('list-test').detail('detail-test').action('action-test').params({
       page: 1,
       limit: 10,
     });
-  });
+  }
 
   const end = performance.now();
   const duration = end - start;

@@ -1,10 +1,10 @@
-import {AChain, Chain, DChain, LChain} from './type/array';
+import type {AChain, Chain, DChain, LChain} from './type/array';
 import {
   ADDITIONS,
-  ActionParams,
-  AllParams,
-  DetailParams,
-  ListParams,
+  type ActionParams,
+  type AllParams,
+  type DetailParams,
+  type ListParams,
   actionParams,
   allParams,
   detailParams,
