@@ -26,7 +26,7 @@ export default defineConfig({
       formats: ['es', 'cjs'],
     },
     rollupOptions: {
-      external: [],
+      external: ['zod'],
       plugins: [
         typescriptPaths({
           preserveExtensions: true,
