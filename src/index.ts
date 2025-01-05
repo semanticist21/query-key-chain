@@ -140,6 +140,7 @@ const handleFinal = {
 export const createChainFactory = <U extends string, TBases extends [U, ...U[]]>(
   keys: TBases,
   options?: {
+    /** @default 'console' */
     severity?: 'error' | 'console' | 'silent';
   }
 ) => {

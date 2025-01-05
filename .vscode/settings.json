@@ -1,5 +1,8 @@
 {
   "cSpell.words": ["querykey", "tanstack", "typecheck"],
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "biomejs.biome"
+  "editor.defaultFormatter": "biomejs.biome",
+  "[json]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  }
 }

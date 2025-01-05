@@ -52,13 +52,13 @@ export const c = createQueryKeyFactory(
   }
 );
 
-const usersKey = c("user").lists();
+const usersKey = c("user").lists().params({ foo: "true" });
 const invalidKey = c("invalid_key"); // error
 
-// use directly without validation.
+// without validation.
 import { chain } from "query-key-chain";
 
-const usersKey = chain("user").lists();
+const usersKey = chain("user").lists().params({ foo: "true" });
 ```
 
 ### With `@tanstack/react-query`
@@ -95,9 +95,9 @@ useMutation({
   mutationKey: chain("board").list(boardId).item(articleId).action("delete"),
   mutationFn: (params: EditParams) => deleteBoardArticle(params),
   onSuccess: () => {
-    // invalidate all board articles.
+    // this will invalidate board & related articles.
     queryClient.invalidateQueries({
-      queryKey: chain("board").list(boardId).items(),
+      queryKey: chain("board").list(boardId),
     });
 
     // or you can just invalidate all..
