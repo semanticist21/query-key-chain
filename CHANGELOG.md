@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0] - 2025-01-04
+
+- Changed
+
+  - `createQueryKeyFactory` now checks runtime type of keys.
+  - `detail` is changed to `item`.
+  - `lists`, `items`, `actions` has `params` method.
+
 ## [0.7.0] - 2024-09-20
 
 - Changed

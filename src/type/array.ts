@@ -1,20 +1,20 @@
-import type {ActionParams, DetailParams, ListParams} from './key';
+import type {ActionParams, ItemParams, ListParams} from './key';
 
 export interface Chain<TKey extends string> extends ReadonlyArray<unknown> {
   all: () => [TKey, ...unknown[]];
 
-  lists: () => [TKey, ...unknown[]];
-  details: () => [TKey, ...unknown[]];
-  actions: () => [TKey, ...unknown[]];
+  lists: () => FChain<TKey>;
+  items: () => FChain<TKey>;
+  actions: () => FChain<TKey>;
 
   list: (key: unknown) => LChain<TKey>;
-  detail: (key: unknown) => DChain<TKey>;
-  action: (key: unknown) => AChain<TKey>;
+  item: (key: unknown) => IChain<TKey>;
+  action: (key: unknown) => FChain<TKey>;
 
   params: (params: unknown) => [TKey, ...unknown[]];
 }
 
 // params type
 export type LChain<TKey extends string> = Pick<Chain<TKey>, ListParams> & ReadonlyArray<unknown>;
-export type DChain<TKey extends string> = Pick<Chain<TKey>, DetailParams> & ReadonlyArray<unknown>;
-export type AChain<TKey extends string> = Pick<Chain<TKey>, ActionParams> & ReadonlyArray<unknown>;
+export type IChain<TKey extends string> = Pick<Chain<TKey>, ItemParams> & ReadonlyArray<unknown>;
+export type FChain<TKey extends string> = Pick<Chain<TKey>, ActionParams> & ReadonlyArray<unknown>;

@@ -1,47 +1,64 @@
 import {expect, test} from 'vitest';
 
-import {createQueryKey} from '.';
-import {ADDITIONS} from './type/key';
+import {chain, createChainFactory} from '.';
+import {additions} from './type/key';
+
+test('key factory error test', () => {
+  const factory = createChainFactory(['valid_key'], {
+    severity: 'error',
+  });
+
+  // @ts-expect-error intentional error
+  expect(() => factory('invalid_key')).toThrow();
+});
 
 test('key generation test - 1 depth', () => {
-  expect(createQueryKey('test').all()).toEqual(['test', ...ADDITIONS.all]);
-  expect(createQueryKey('test').lists()).toEqual(['test', ...ADDITIONS.all, ...ADDITIONS.list]);
-  expect(createQueryKey('test').details()).toEqual(['test', ...ADDITIONS.all, ...ADDITIONS.detail]);
-  expect(createQueryKey('test').actions()).toEqual(['test', ...ADDITIONS.all, ...ADDITIONS.action]);
+  expect(chain('test').all()).toEqual(['test', ...additions.ALL]);
+  expect(chain('test').lists()).toEqual(['test', ...additions.ALL, ...additions.LIST]);
+  expect(chain('test').items()).toEqual(['test', ...additions.ALL, ...additions.ITEM]);
+  expect(chain('test').actions()).toEqual(['test', ...additions.ALL, ...additions.ACTION]);
 });
 
 test('key generation test - 2 depth', () => {
-  expect(createQueryKey('test').list('list-test').detail('detail-test')).toEqual([
+  expect(chain('test').lists().params({params: 'params-test'})).toEqual([
     'test',
-    ...ADDITIONS.all,
-    ...ADDITIONS.list,
+    ...additions.ALL,
+    ...additions.LIST,
+    ...additions.PARAMS,
+    {params: 'params-test'},
+  ]);
+
+  expect(chain('test').list('list-test').item('item-test')).toEqual([
+    'test',
+    ...additions.ALL,
+    ...additions.LIST,
     'list-test',
-    ...ADDITIONS.detail,
-    'detail-test',
+    ...additions.ITEM,
+    'item-test',
   ]);
 
-  expect(createQueryKey('test').detail('detail-test').action('action-test')).toEqual([
+  expect(chain('test').item('item-test').action('action-test')).toEqual([
     'test',
-    ...ADDITIONS.all,
-    ...ADDITIONS.detail,
-    'detail-test',
-    ...ADDITIONS.action,
+    ...additions.ALL,
+    ...additions.ITEM,
+    'item-test',
+    ...additions.ACTION,
     'action-test',
   ]);
 
-  expect(createQueryKey('test').action('action-test').params({params: 'params-test'})).toEqual([
+  expect(chain('test').action('action-test').params({params: 'params-test'})).toEqual([
     'test',
-    ...ADDITIONS.all,
-    ...ADDITIONS.action,
+    ...additions.ALL,
+    ...additions.ACTION,
     'action-test',
-    ...ADDITIONS.params,
+    ...additions.PARAMS,
     {params: 'params-test'},
   ]);
 });
 
 test('hierarchy test', () => {
-  const ancestor = createQueryKey('test');
-  const child = ancestor.list('list-test').detail('detail-test').action('action-test').params({
+  const ancestor = chain('test');
+  const child = ancestor.list('list-test').item('item-test').action('action-test').params({
     page: 1,
     limit: 10,
   });
@@ -51,44 +68,45 @@ test('hierarchy test', () => {
 
   expect(lists).toEqual(sliced);
 
-  const details = ancestor.list('list-test').details();
-  const slicedDetails = child.slice(0, 8);
+  const items = ancestor.list('list-test').items();
+  const slicedItems = child.slice(0, 8);
 
-  expect(details).toEqual(slicedDetails);
+  expect(items).toEqual(slicedItems);
 
-  const actions = ancestor.list('list-test').detail('detail-test').actions();
+  const actions = ancestor.list('list-test').item('item-test').actions();
   const slicedActions = child.slice(0, 11);
 
   expect(actions).toEqual(slicedActions);
 });
 
 test('key generation test - group', () => {
-  expect(createQueryKey('test').lists()).toEqual(['test', ...ADDITIONS.all, ...ADDITIONS.list]);
+  expect(chain('test').lists()).toEqual(['test', ...additions.ALL, ...additions.LIST]);
 
-  expect(createQueryKey('test').list('list-test').details()).toEqual([
+  expect(chain('test').list('list-test').items()).toEqual([
     'test',
-    ...ADDITIONS.all,
-    ...ADDITIONS.list,
+    ...additions.ALL,
+    ...additions.LIST,
     'list-test',
-    ...ADDITIONS.detail,
+    ...additions.ITEM,
   ]);
 
-  expect(createQueryKey('test').detail('detail-test').actions()).toEqual([
+  expect(chain('test').list('list-test').item('item-test').actions()).toEqual([
     'test',
-    ...ADDITIONS.all,
-    ...ADDITIONS.detail,
-    'detail-test',
-    ...ADDITIONS.action,
+    ...additions.ALL,
+    ...additions.LIST,
+    'list-test',
+    ...additions.ITEM,
+    'item-test',
+    ...additions.ACTION,
   ]);
 });
 
 test('performance test', () => {
   const start = performance.now();
 
-  const chain = createQueryKey('test');
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   for (const _i of Array.from({length: 5000})) {
-    chain.list('list-test').detail('detail-test').action('action-test').params({
+    chain('test').list('list-test').item('item-test').action('action-test').params({
       page: 1,
       limit: 10,
     });

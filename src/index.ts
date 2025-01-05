@@ -1,13 +1,14 @@
-import type {AChain, Chain, DChain, LChain} from './type/array';
+import {z} from 'zod';
+import type {Chain, FChain, IChain, LChain} from './type/array';
 import {
-  ADDITIONS,
   type ActionParams,
   type AllParams,
-  type DetailParams,
+  type ItemParams,
   type ListParams,
   actionParams,
+  additions,
   allParams,
-  detailParams,
+  itemParams,
   listParams,
 } from './type/key';
 
@@ -15,24 +16,24 @@ const handleBase = {
   get<TKey extends string>(target: unknown[], prop: unknown, receiver: Chain<TKey>) {
     switch (prop) {
       case 'all':
-        return () => [...receiver, ...ADDITIONS.all];
+        return () => [...receiver, ...additions.ALL];
 
       case 'lists':
-        return () => [...receiver.all(), ...ADDITIONS.list];
-      case 'details':
-        return () => [...receiver.all(), ...ADDITIONS.detail];
+        return () => new Proxy([...receiver.all(), ...additions.LIST], handleFinal);
+      case 'items':
+        return () => new Proxy([...receiver.all(), ...additions.ITEM], handleFinal);
       case 'actions':
-        return () => [...receiver.all(), ...ADDITIONS.action];
+        return () => new Proxy([...receiver.all(), ...additions.ACTION], handleFinal);
 
       case 'list':
-        return (key: unknown) => new Proxy([...receiver.lists(), key], handleList);
-      case 'detail':
-        return (key: unknown) => new Proxy([...receiver.details(), key], handleDetail);
+        return (key: unknown) => new Proxy([...receiver.all(), ...additions.LIST, key], handleList);
+      case 'item':
+        return (key: unknown) => new Proxy([...receiver.all(), ...additions.ITEM, key], handleItem);
       case 'action':
-        return (key: unknown) => new Proxy([...receiver.actions(), key], handleAction);
+        return (key: unknown) => new Proxy([...receiver.all(), ...additions.ACTION, key], handleFinal);
 
       case 'params':
-        return (params: unknown) => [...receiver, ...ADDITIONS.params, params];
+        return (params: unknown) => [...receiver, ...additions.PARAMS, params];
 
       default:
         return Reflect.get(target, prop as PropertyKey, receiver);
@@ -51,18 +52,18 @@ const handleBase = {
 const handleList = {
   get<TKey extends string>(target: unknown[], prop: unknown, receiver: LChain<TKey>) {
     switch (prop) {
-      case 'details':
-        return () => [...receiver, ...ADDITIONS.detail];
+      case 'items':
+        return () => new Proxy([...receiver, ...additions.ITEM], handleFinal);
       case 'actions':
-        return () => [...receiver, ...ADDITIONS.action];
+        return () => new Proxy([...receiver, ...additions.ACTION], handleFinal);
 
-      case 'detail':
-        return (key: unknown) => new Proxy([...receiver.details(), key], handleDetail);
+      case 'item':
+        return (key: unknown) => new Proxy([...receiver, ...additions.ITEM, key], handleItem);
       case 'action':
-        return (key: unknown) => new Proxy([...receiver.actions(), key], handleAction);
+        return (key: unknown) => new Proxy([...receiver, ...additions.ACTION, key], handleFinal);
 
       case 'params':
-        return (params: unknown) => [...receiver, ...ADDITIONS.params, params];
+        return (params: unknown) => [...receiver, ...additions.PARAMS, params];
 
       default:
         return Reflect.get(target, prop as PropertyKey, receiver);
@@ -78,17 +79,17 @@ const handleList = {
   },
 };
 
-const handleDetail = {
-  get<TKey extends string>(target: unknown[], prop: unknown, receiver: DChain<TKey>) {
+const handleItem = {
+  get<TKey extends string>(target: unknown[], prop: unknown, receiver: IChain<TKey>) {
     switch (prop) {
       case 'actions':
-        return () => [...receiver, ...ADDITIONS.action];
+        return () => new Proxy([...receiver, ...additions.ACTION], handleFinal);
 
       case 'action':
-        return (action: unknown) => new Proxy([...receiver.actions(), action], handleAction);
+        return (action: unknown) => new Proxy([...receiver, ...additions.ACTION, action], handleFinal);
 
       case 'params':
-        return (params: unknown) => [...receiver, ...ADDITIONS.params, params];
+        return (params: unknown) => [...receiver, ...additions.PARAMS, params];
 
       default:
         return Reflect.get(target, prop as PropertyKey, receiver);
@@ -96,7 +97,7 @@ const handleDetail = {
   },
 
   has(target: unknown[], prop: unknown) {
-    if (typeof prop === 'string' && detailParams.includes(prop as DetailParams)) {
+    if (typeof prop === 'string' && itemParams.includes(prop as ItemParams)) {
       return true;
     }
 
@@ -104,11 +105,11 @@ const handleDetail = {
   },
 };
 
-const handleAction = {
-  get<TKey extends string>(target: unknown[], prop: unknown, receiver: AChain<TKey>) {
+const handleFinal = {
+  get<TKey extends string>(target: unknown[], prop: unknown, receiver: FChain<TKey>) {
     switch (prop) {
       case 'params':
-        return (params: unknown) => [...receiver, ...ADDITIONS.params, params];
+        return (params: unknown) => [...receiver, ...additions.PARAMS, params];
     }
 
     return Reflect.get(target, prop as PropertyKey, receiver);
@@ -125,17 +126,42 @@ const handleAction = {
 
 /**
  * @param keys base keys.
- * @returns `createQueryKey` function with typed base keys.
+ * @returns `chain` function with validation.
+ *
+ * @param {U[]} keys
+ *
  * @example
  * ```ts
- * const keys = ["dashboard", "user", "account"] as const;
- * const chain = createQueryKeyFactory(...keys)
+ * const chain = createChainFactory(["dashboard", "user", "account"])
  * chain("dashboard").all()
+ * chain("invalid_key").all() // throw error
  * ```
  */
-export const createQueryKeyFactory = <TBaseArray extends Array<string>>(...keys: TBaseArray) => {
-  return <T extends (typeof keys)[number]>(baseQuery: T) =>
-    new Proxy([baseQuery], handleBase) as unknown as Chain<T>;
+export const createChainFactory = <U extends string, TBases extends [U, ...U[]]>(
+  keys: TBases,
+  options?: {
+    severity?: 'error' | 'console' | 'silent';
+  }
+) => {
+  const schema = z.enum(keys);
+
+  return <T extends z.infer<typeof schema>>(baseQuery: T) => {
+    if (options?.severity !== 'silent') {
+      const msg = `Invalid query key "${baseQuery}" detected. It must be one of the following: ${keys.map((key) => `"${key}"`).join(', ')}.`;
+
+      if (!schema.safeParse(baseQuery).success) {
+        if (options?.severity === 'error') {
+          throw new Error(msg);
+        }
+
+        if (!options || !options.severity || options?.severity === 'console') {
+          console.warn(msg);
+        }
+      }
+    }
+
+    return new Proxy([baseQuery], handleBase) as unknown as Chain<T>;
+  };
 };
 
 /**
@@ -143,19 +169,7 @@ export const createQueryKeyFactory = <TBaseArray extends Array<string>>(...keys:
  * @returns [baseKey] with chainable methods.
  * @example
  * ```ts
- * const query = createQueryKey("dashboard")
+ * const query = chain("dashboard")
  * ```
  */
-export const createQueryKey = <TBase extends string>(baseKey: TBase) =>
-  new Proxy([baseKey], handleBase) as unknown as Chain<TBase>;
-
-/**
- * @description same with `createQueryKey` with shorter name.
- * @param baseKey base key string.
- * @returns [baseKey] with chainable methods.
- * @example
- * ```ts
- * const query = keyChain("dashboard")
- * ```
- */
-export const keyChain = createQueryKey;
+export const chain = <TBase extends string>(baseKey: TBase) => new Proxy([baseKey], handleBase) as unknown as Chain<TBase>;

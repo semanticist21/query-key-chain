@@ -1,6 +1,6 @@
+import path from 'node:path';
 // vite.config.ts
 import typescript from '@rollup/plugin-typescript';
-import path from 'node:path';
 import {typescriptPaths} from 'rollup-plugin-typescript-paths';
 import {defineConfig} from 'vite';
 
