@@ -67,21 +67,21 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@rollup/plugin-typescript": "^11.1.6",
-    "@testing-library/jest-dom": "^6.4.2",
+    "@testing-library/jest-dom": "^6.6.3",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
-    "@types/node": "^20.14.10",
-    "babel-jest": "^29.7.0",
+    "@types/node": "^20.17.11",
     "husky": "^9.1.7",
     "lint-staged": "^15.3.0",
-    "prettier": "^3.3.3",
+    "prettier": "^3.4.2",
     "rollup-plugin-typescript-paths": "^1.5.0",
     "ts-node": "^10.9.2",
-    "tslib": "^2.6.3",
-    "typescript": "^5.5.3",
-    "vite": "^5.3.3",
-    "vitest": "^2.1.1"
+    "tslib": "^2.8.1",
+    "typescript": "^5.7.2",
+    "vite": "^5.4.11",
+    "vitest": "^2.1.8"
   },
   "dependencies": {
     "zod": "^3.24.1"
-  }
+  },
+  "packageManager": "pnpm@9.15.2"
 }
