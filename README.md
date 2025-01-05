@@ -34,7 +34,7 @@ pnpm add query-key-chain
 
 Easily generate unique query keys when using `@tanstack/react-query`.
 
-`chain` function dynamically generates hierarchical arrays: `base` > `list` > `item` > `action` > `params`. Each level can be combined or omitted.
+`chain` function dynamically generates hierarchical arrays: `all` > `list` > `item` > `action` > `params`. Each level can be combined or omitted.
 
 ## Example
 
