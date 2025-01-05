@@ -35,6 +35,7 @@ pnpm add query-key-chain
 Easily generate unique query keys when using `@tanstack/react-query`.
 
 `chain` function dynamically generates hierarchical arrays: `all` > `list` > `item` > `action` > `params`. Each level can be combined or omitted.
+You can get grouped keys all at once using methods such as `lists`, `items`, `actions`.
 
 ## Example
 
@@ -92,7 +93,6 @@ export const getBoardArticle = (
   });
 
 useMutation({
-  mutationKey: chain("board").list(boardId).item(articleId).action("delete"),
   mutationFn: (params: EditParams) => deleteBoardArticle(params),
   onSuccess: () => {
     // this will invalidate board & related articles.
