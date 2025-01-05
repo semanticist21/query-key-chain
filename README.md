@@ -41,57 +41,67 @@ Easily generate unique query keys when using `@tanstack/react-query`.
 ### Basic Usage
 
 ```typescript
-import { createQueryKey } from 'query-key-chain';
+import { createQueryKey } from "query-key-chain";
 
-export const c = createQueryKeyFactory(['user', 'post', 'comment'],
+export const c = createQueryKeyFactory(
+  ["user", "post", "comment"],
   // optional
   {
     // 'error' | 'console' | 'silent'
-    severity: 'error',
+    severity: "error",
   }
 );
 
-const usersKey = c('user').lists();
-const invalidKey = c('invalid_key'); // error
+const usersKey = c("user").lists();
+const invalidKey = c("invalid_key"); // error
 
-// use direct without validation.
-import { chain } from 'query-key-chain';
+// use directly without validation.
+import { chain } from "query-key-chain";
 
-const usersKey = chain('user').lists();
+const usersKey = chain("user").lists();
 ```
 
 ### With `@tanstack/react-query`
 
 ```typescript
 // example/dashboard.queries.ts
-import {queryOptions, useQueryClient} from '@tanstack/react-query';
-import {chain} from 'query-key-chain';
+import { queryOptions, useQueryClient } from "@tanstack/react-query";
+import { chain } from "query-key-chain";
 
 // key declarations & invalidations.
 export const getAllBoards = (params: ListParams) =>
   queryOptions({
-    queryKey: chain('board').lists().params(params),
+    queryKey: chain("board").lists().params(params),
     queryFn: () => fetchBoards(params),
   });
 
 export const getBoard = (boardId: string, params: ListParams) =>
   queryOptions({
-    queryKey: chain('board').list(boardId).params(params),
+    queryKey: chain("board").list(boardId).params(params),
     queryFn: () => fetchBoard(boardId, params),
   });
 
-export const getBoardArticle = (boardId: string, articleId: string, params: ArticleParams) =>
+export const getBoardArticle = (
+  boardId: string,
+  articleId: string,
+  params: ArticleParams
+) =>
   queryOptions({
-    queryKey: chain('board').list(boardId).item(articleId).params(params),
+    queryKey: chain("board").list(boardId).item(articleId).params(params),
     queryFn: () => fetchBoardArticle(boardId, articleId, params),
   });
 
 useMutation({
-  mutationKey: chain('board').list(boardId).item(articleId).action('delete'),
+  mutationKey: chain("board").list(boardId).item(articleId).action("delete"),
   mutationFn: (params: EditParams) => deleteBoardArticle(params),
   onSuccess: () => {
     // invalidate all board articles.
-    queryClient.invalidateQueries({queryKey: chain('board').list(boardId).items()});
+    queryClient.invalidateQueries({
+      queryKey: chain("board").list(boardId).items(),
+    });
+
+    // or you can just invalidate all..
+    queryClient.invalidateQueries({ queryKey: chain("board").all() });
   },
 });
 ```
