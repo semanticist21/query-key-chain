@@ -22,9 +22,7 @@
     }
   },
   "main": "dist/index.js",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "repository": {
     "type": "git",
     "url": "https://github.com/semanticist21/query-key-chain"
