@@ -1,4 +1,3 @@
-import {z} from 'zod';
 import type {Chain, FChain, IChain, LChain} from './type/array';
 import {
   type ActionParams,
@@ -140,17 +139,15 @@ const handleFinal = {
 export const createChainFactory = <U extends string, TBases extends [U, ...U[]]>(
   keys: TBases,
   options?: {
-    /** @default 'console' */
+    /** @default 'console warning' */
     severity?: 'error' | 'console' | 'silent';
   }
 ) => {
-  const schema = z.enum(keys);
-
-  return <T extends z.infer<typeof schema>>(baseQuery: T) => {
+  return <T extends TBases[number]>(baseQuery: T) => {
     if (options?.severity !== 'silent') {
       const msg = `Invalid query key "${baseQuery}" detected. It must be one of the following: ${keys.map((key) => `"${key}"`).join(', ')}.`;
 
-      if (!schema.safeParse(baseQuery).success) {
+      if (!keys.includes(baseQuery)) {
         if (options?.severity === 'error') {
           throw new Error(msg);
         }

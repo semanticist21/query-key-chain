@@ -4,7 +4,7 @@ import {chain, createChainFactory} from '.';
 import {additions} from './type/key';
 
 test('key factory error test', () => {
-  const factory = createChainFactory(['valid_key'], {
+  const factory = createChainFactory(['valid_key', 'valid_key2', 'valid_key3'], {
     severity: 'error',
   });
 
