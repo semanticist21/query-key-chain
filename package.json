@@ -22,7 +22,9 @@
     }
   },
   "main": "dist/index.js",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/semanticist21/query-key-chain"
@@ -67,17 +69,17 @@
     "@rollup/plugin-typescript": "^11.1.6",
     "@testing-library/jest-dom": "^6.6.3",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
-    "@types/node": "^20.17.11",
+    "@types/node": "^20.17.19",
     "@vitest/coverage-v8": "2.1.8",
     "husky": "^9.1.7",
-    "lint-staged": "^15.3.0",
-    "prettier": "^3.4.2",
+    "lint-staged": "^15.4.3",
+    "prettier": "^3.5.1",
     "rollup-plugin-typescript-paths": "^1.5.0",
     "ts-node": "^10.9.2",
     "tslib": "^2.8.1",
-    "typescript": "^5.7.2",
-    "vite": "^5.4.11",
-    "vitest": "^2.1.8"
+    "typescript": "^5.7.3",
+    "vite": "^5.4.14",
+    "vitest": "^2.1.9"
   },
   "packageManager": "pnpm@9.15.2"
 }
