@@ -3,6 +3,7 @@ import path from 'node:path';
 import typescript from '@rollup/plugin-typescript';
 import {typescriptPaths} from 'rollup-plugin-typescript-paths';
 import {defineConfig} from 'vite';
+import {coverageConfigDefaults} from 'vitest/dist/config.js';
 
 const __dirname = path.resolve();
 
@@ -15,6 +16,13 @@ export default defineConfig({
         replacement: path.resolve(__dirname, './src'),
       },
     ],
+  },
+  test: {
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html'],
+      exclude: [...coverageConfigDefaults.exclude, 'src/type'],
+    },
   },
   build: {
     manifest: true,
