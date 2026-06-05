@@ -28,23 +28,27 @@ pnpm add query-key-chain
 ## Note
 
 1. `TypeScript` is strongly recommended for better type safety and enhanced development experience.
-2. This package uses the `Proxy API`, Ensure **your target ECMAScript version** (ES6 and above) supports `Proxies`.
+2. This package uses the `Proxy API`. Ensure **your target ECMAScript version** (ES6 and above) supports `Proxy`.
 
 ## Usage
 
 Easily generate unique query keys when using `@tanstack/react-query`.
 
-`chain` function dynamically generates hierarchical arrays: `all` > `list` > `item` > `action` > `params`. Each level can be combined or omitted.
-You can get grouped keys all at once using methods such as `lists`, `items`, `actions`.
+The `chain` function dynamically generates hierarchical arrays:
+`all` > `list` > `item` > `action` > `params`.
+Each level can be combined or omitted.
+You can get grouped keys using methods such as `lists`, `items`, and `actions`.
+
+The `createChainFactory` function creates a validated chain factory when you want to restrict base keys to a known set.
 
 ## Example
 
 ### Basic Usage
 
 ```typescript
-import { createQueryKey } from "query-key-chain";
+import { chain, createChainFactory } from "query-key-chain";
 
-export const c = createQueryKeyFactory(
+export const c = createChainFactory(
   ["user", "post", "comment"],
   // optional
   {
@@ -53,12 +57,10 @@ export const c = createQueryKeyFactory(
   }
 );
 
-const usersKey = c("user").lists().params({ foo: "true" });
+const validatedUsersKey = c("user").lists().params({ foo: "true" });
 const invalidKey = c("invalid_key"); // error
 
 // without validation.
-import { chain } from "query-key-chain";
-
 const usersKey = chain("user").lists().params({ foo: "true" });
 ```
 

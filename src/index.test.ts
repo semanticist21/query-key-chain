@@ -1,4 +1,4 @@
-import {expect, test} from 'vitest';
+import {expect, test, vi} from 'vitest';
 
 import {chain, createChainFactory} from '.';
 import {additions} from './type/key';
@@ -10,6 +10,29 @@ test('key factory error test', () => {
 
   // @ts-expect-error intentional error
   expect(() => factory('invalid_key')).toThrow();
+});
+
+test('key factory warning and silent modes', () => {
+  const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+  const consoleFactory = createChainFactory(['valid_key'], {
+    severity: 'console',
+  });
+  const silentFactory = createChainFactory(['valid_key'], {
+    severity: 'silent',
+  });
+
+  // @ts-expect-error intentional error
+  expect(consoleFactory('invalid_key').all()).toEqual(['invalid_key', ...additions.ALL]);
+  expect(warn).toHaveBeenCalledOnce();
+
+  // @ts-expect-error intentional error
+  expect(silentFactory('invalid_key').all()).toEqual(['invalid_key', ...additions.ALL]);
+  expect(warn).toHaveBeenCalledOnce();
+
+  expect(consoleFactory('valid_key').all()).toEqual(['valid_key', ...additions.ALL]);
+
+  warn.mockRestore();
 });
 
 test('key generation test - 1 depth', () => {
@@ -98,6 +121,55 @@ test('key generation test - group', () => {
     ...additions.ITEM,
     'item-test',
     ...additions.ACTION,
+  ]);
+});
+
+test('chain property checks and params at each level', () => {
+  const base = chain('test');
+  expect('all' in base).toBe(true);
+  expect('missing' in base).toBe(false);
+  expect(base.params('base-params')).toEqual(['test', ...additions.PARAMS, 'base-params']);
+
+  const list = base.list('list-test');
+  expect('items' in list).toBe(true);
+  expect('missing' in list).toBe(false);
+  expect(list.params('list-params')).toEqual([
+    'test',
+    ...additions.ALL,
+    ...additions.LIST,
+    'list-test',
+    ...additions.PARAMS,
+    'list-params',
+  ]);
+
+  const item = list.item('item-test');
+  expect('actions' in item).toBe(true);
+  expect('missing' in item).toBe(false);
+  expect(item.params('item-params')).toEqual([
+    'test',
+    ...additions.ALL,
+    ...additions.LIST,
+    'list-test',
+    ...additions.ITEM,
+    'item-test',
+    ...additions.PARAMS,
+    'item-params',
+  ]);
+
+  const final = item.action('action-test');
+  expect('params' in final).toBe(true);
+  expect('missing' in final).toBe(false);
+  expect(final.params('final-params')).toEqual([
+    'test',
+    ...additions.ALL,
+    ...additions.LIST,
+    'list-test',
+    ...additions.ITEM,
+    'item-test',
+    ...additions.ACTION,
+    'action-test',
+    ...additions.PARAMS,
+    'final-params',
   ]);
 });
 
