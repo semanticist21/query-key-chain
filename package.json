@@ -33,7 +33,7 @@
   "files": ["dist"],
   "repository": {
     "type": "git",
-    "url": "https://github.com/semanticist21/query-key-chain"
+    "url": "git+https://github.com/semanticist21/query-key-chain.git"
   },
   "keywords": [
     "react",
