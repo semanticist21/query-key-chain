@@ -1,4 +1,4 @@
-import type {ActionParams, ItemParams, ListParams} from './key';
+import type {ActionParams, ItemParams, ListParams} from './key.js';
 
 export interface Chain<TKey extends string> extends ReadonlyArray<unknown> {
   all: () => [TKey, ...unknown[]];

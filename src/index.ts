@@ -1,4 +1,4 @@
-import type {Chain, FChain, IChain, LChain} from './type/array';
+import type {Chain, FChain, IChain, LChain} from './type/array.js';
 import {
   type ActionParams,
   type AllParams,
@@ -9,7 +9,7 @@ import {
   allParams,
   itemParams,
   listParams,
-} from './type/key';
+} from './type/key.js';
 
 const handleBase = {
   get<TKey extends string>(target: unknown[], prop: unknown, receiver: Chain<TKey>) {

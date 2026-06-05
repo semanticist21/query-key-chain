@@ -5,7 +5,8 @@
   "version": "1.2.0",
   "description": "A simple and functional query key management solution for Tanstack React Query, using a cascading array structure.",
   "scripts": {
-    "build": "vite build",
+    "build": "vite build && pnpm run build:cjs-types",
+    "build:cjs-types": "cp dist/index.d.ts dist/index.d.cts && cp dist/type/array.d.ts dist/type/array.d.cts && cp dist/type/key.d.ts dist/type/key.d.cts && perl -0pi -e \"s#'\\\\./type/array\\\\.js'#'./type/array.d.cts'#g; s#'\\\\./key\\\\.js'#'./key.d.cts'#g\" dist/index.d.cts dist/type/array.d.cts",
     "test": "vitest --run --typecheck --coverage",
     "publish-prod": "pnpm run test && pnpm run build && pnpm publish --access=public",
     "format": "biome check --write .",
@@ -17,11 +18,18 @@
   },
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     }
   },
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": ["dist"],
   "repository": {
     "type": "git",
